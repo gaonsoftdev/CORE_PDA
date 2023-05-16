@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+    <!--# 위의 명시된 날짜 이후가 되면 페이지가 캐싱되지 않습니다.
+    (따라서 위와 같은 날짜로 지정할 경우 페이지는 지속적으로 캐싱되지 않습니다.)-->
+    <meta http-equiv="Expires" content="-1">
+    <!--# 캐시된 페이지가 만료되어 삭제되는 시간을 정의합니다. 특별한 경우가 아니면 -1로 설정합니다.-->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.0)-->
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.1)
+    출처: https://coding-restaurant.tistory.com/339 [코딩맛집:티스토리]-->
+
+	<title>기타출고처리</title>
+	<link rel="stylesheet" href="css/setup.css?v=20220929">
+	<link rel="stylesheet" href="css/style_old.css?v=20220929">
+	<link rel="stylesheet" href="css/date_picker.css?v=20220929">
+	<style>
+		/*
+		[v-cloak] .v-cloak--hidden{
+		  display: none;
+		}
+		*/
+		[v-cloak]{
+		  display: none;
+		}
+	</style>
+</head>
+<body>
+    <div v-cloak id="app" class="main data">
+	    <div class="top">
+		    <div class="img" onclick="history.back();">
+				<img src="img/btn_back.png" alt="">
+		    </div>
+		    <span>기타출고처리[영림원][{{pdaPort}}]</span>
+	    </div>
+	    
+	    <div class="input-wrap">
+
+			<ul class="input-row">
+				<li class="name">
+					<label>BarCode</label>
+				</li>
+				<li class="input-data scan code-help">
+					<input type="text" name="BarCode" v-model="queryForm.BarCode" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<span class="fnc_alarm" @click="runScanner('queryForm.BarCode');">스캔</span>
+					<span class="close"></span>
+				</li>
+
+			</ul>
+
+			<ul class="input-row">
+				<li class="name">
+					<label>출고일</label>
+				</li>
+				<li class="input-data">
+					<input type="text" name="MovementDate" v-model.trim="queryForm.MovementDate" gx-init="addForm" value="" validate="required:이동 희망일를 입력해주세요!" gx-datepicker="queryForm.CompleteWishDate" gx-default="">
+				</li>
+			</ul>
+
+			<ul class="input-row">
+				<li class="name">
+					<label>품명</label>
+				</li>
+				<li class="input-data">
+					<input type="text" name="ItemName" v-model="queryForm.ItemName" gx-init="addForm" gx-default="">
+				</li>
+			</ul>
+
+			<ul class="input-row">
+				<li class="name">
+					<label>품번</label>
+				</li>
+				<li class="input-data">
+					<input type="text" name="ItemNo" v-model="queryForm.ItemNo" gx-init="addForm" gx-default="">
+				</li>
+			</ul>
+
+			<ul class="input-row">
+				<li class="name">
+					<label>LotNo</label>
+				</li>
+				<li class="input-data">
+					<input type="text" name="LotNo" v-model="queryForm.LotNo" gx-init="addForm" gx-default="">
+				</li>
+			</ul>
+
+			<ul class="input-row">
+				<li class="name">
+					<label>출고창고</label>
+				</li>
+				<li class="input-data">
+					<input type="text" name="OutWhName" v-model="queryForm.OutWhName" gx-init="addForm" gx-default="">
+				</li>
+			</ul>
+
+			<ul class="input-row">
+				<li class="name">
+					<label>수량</label>
+				</li>
+				<li class="input-data">
+					<input type="text" name="OutQty" v-model="queryForm.OutQty" gx-init="addForm" gx-default="">
+				</li>
+			</ul>
+
+			<ul class="input-row">
+				<li class="name">
+					<label>출고구분</label>
+				</li>
+				<li class="input-data">
+					<select name="EtcDetailKind" v-model="queryForm.EtcDetailKind" validate="required:창고를 선택해주세요!">
+						<option value="">- 선택 -</option>
+						<option v-for="row in rows.EtcDetail" :value="row.EtcDetailKind">{{row.EtcDetailKindName}}</option>
+					</select>
+				</li>
+			</ul>
+
+			<ul class="input-row">
+				<li class="name">
+					<label>비고</label>
+				</li>
+				<li class="input-data">
+					<input type="text" name="Remark" v-model="queryForm.Remark" gx-init="addForm" gx-default="">
+				</li>
+			</ul>
+
+			<div class="btn-row">
+				<button class="left" @click="init();">초기화</button>
+				<button class="right" @click="save2();">
+					출고
+				</button>
+			</div>
+	    </div>
+
+		<div class="bg-wrap" code-help="ItemNo" gx-layer="">
+			<div class="code-help-con">
+				<div class="code-help-top">
+					<span>품번 선택</span>
+				</div>
+	
+				<div class="code-help-main">
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>품번</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="ItemNo" v-model="codeHelp.ItemNo" @click="focusCodeHelp('ItemNo');" @change="focusCodeHelp('ItemNo');">
+						</li>
+					</ul>
+	
+					<div class="code-help-button-row">
+						<button @click="searchCodeHelp('ItemNo');"> <img src="img/ic_search.png" alt=""> 조회하기</button>
+					</div>
+					
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('ItemNo','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('ItemNo');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('ItemNo','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('ItemNo');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="table-row">
+						<div id="grid-itemno" class="table">
+						</div>
+					</div>
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('ItemNo');">닫기</button>
+						<button class="right" @click="selectedApplyCodeHelp('ItemNo');">선택하기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="bg-wrap" id="info-container" gx-layer="">
+			<div class="container">
+				<button class="btn-close" @click="closeInfo();"></button>
+				<p class="title">바코드 스캔 권한 설정 정보</p>
+				<div class="scan-right-raw">
+					
+					<div class="btn-row">
+						<button class="btn-jeju" @click="copyUnsafelyUrl();">카메라 허용 설정 주소 복사</button>
+						<button class="btn-jeju" @click="copyLocationOrigin();">현재 사이트 주소 복사</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-wrap" id="scanner-container" gx-layer="">
+			<div id="qr-reader"></div>
+			<button class="bg-btn-close" @click="stopScanner();"> 
+				<img src="img/btn_close.png" alt="">
+			</button>
+		</div>
+
+	</div>
+	 
+
+<script>
+
+
+
+//$('.input-data.scan').click(function(){
+//  $('.fnc_alarm').hide();
+//});
+</script>
+
+
+	<!-- 개발버전, 도움되는 콘솔 경고를 포함. -->
+	<!--script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script-->
+	<!--
+	<script src="js/vue.js"></script>
+	<script src="js/jquery-3.6.0.js"></script>
+	<script src="js/gx.js"></script>
+	<script src="js/AppBridge.js"></script>
+	<script src="js/login.js"></script>
+	-->
+	<script src="js/app.js?v=1652769578524" defer=""></script>
+</body>
+
+</html>

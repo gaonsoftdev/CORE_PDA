@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+    <!--# 위의 명시된 날짜 이후가 되면 페이지가 캐싱되지 않습니다.
+    (따라서 위와 같은 날짜로 지정할 경우 페이지는 지속적으로 캐싱되지 않습니다.)-->
+    <meta http-equiv="Expires" content="-1">
+    <!--# 캐시된 페이지가 만료되어 삭제되는 시간을 정의합니다. 특별한 경우가 아니면 -1로 설정합니다.-->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.0)-->
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.1)
+    출처: https://coding-restaurant.tistory.com/339 [코딩맛집:티스토리]-->
+
+	<title>환경설정</title>
+	<link rel="stylesheet" href="css/setup.css?v=20220929">
+	<link rel="stylesheet" href="css/style.css?v=20220929">
+	<link rel="stylesheet" href="css/date_picker.css?v=20220929">
+	<style>
+		/*
+		[v-cloak] .v-cloak--hidden{
+		  display: none;
+		}
+		*/
+		[v-cloak]{
+		  display: none;
+		}
+
+	</style>
+</head>
+<body>
+	<div v-cloak id="app" class="main">
+		<div class="setting-top">
+			<div class="img" onclick="location.href='login.html'">
+				 <img src="img/btn_back.png" alt="">
+			</div>
+			<span>환경설정</span>
+		</div>
+		
+		<div class="set-txt">
+			<p>
+			네트워크 통신 환경을 설정합니다.<br>
+			통신할 서버의 접속 정보를 입력하세요.
+			</p>
+		</div>
+
+		<div class="info-container">
+    
+			<div class="box set">
+			<p class="title">
+				데이터 연결(DSN)
+			</p>
+			<div class="sub">
+				<input type="text" name="dsn" v-model="settingItems.dsn" readonly="readonly" @click="setInfo();">
+			</div>
+			</div>
+
+			<div class="box set">
+			<p class="title">
+				언어
+			</p>
+			<div class="sub">
+				<input type="text" name="work" v-model="settingItems.work" readonly="readonly">
+			</div>
+			</div>
+
+			<div class="box set">
+			<p class="title">
+				서버주소
+			</p>
+			<div class="sub">
+				<input type="text" name="serverAddr" v-model="settingItems.serverAddr" readonly="readonly">
+			</div>
+			</div>
+
+			<div class="box company">
+				<p class="title">
+					서버선택
+				</p>
+				<div class="input-data">
+					<select name="DBName">
+						<option value="JPDCPTSDSN">운영</option>
+						<option value="JPDCPTSDSN_221101">개발</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="test">
+			<button class="btn-test" @click="runScanner();">바코드 스캔</button>
+			</div>
+
+			<button class="btn-jeju" @click="save();">저장하기</button>
+
+		</div>
+
+		<div class="bg-wrap" id="info-container" gx-layer="">
+			<div class="container">
+				<button class="btn-close" @click="closeInfo();"></button>
+				<p class="title">바코드 스캔 권한 설정 정보</p>
+				<div class="scan-right-raw">
+					
+					<div class="btn-row">
+						<button class="btn-jeju" @click="copyUnsafelyUrl();">카메라 허용 설정 주소 복사</button>
+						<button class="btn-jeju" @click="copyLocationOrigin();">현재 사이트 주소 복사</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-wrap" id="scanner-container" gx-layer="">
+			<div id="qr-reader"></div>
+			<button class="bg-btn-close" @click="stopScanner();"> 
+				<img src="img/btn_close.png" alt="">
+			</button>
+		</div>
+	</div>
+	<script src="js/app.js?v=1652769578524" defer=""></script>
+</body>
+</html>

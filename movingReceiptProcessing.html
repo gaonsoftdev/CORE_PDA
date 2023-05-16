@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+    <!--# 위의 명시된 날짜 이후가 되면 페이지가 캐싱되지 않습니다.
+    (따라서 위와 같은 날짜로 지정할 경우 페이지는 지속적으로 캐싱되지 않습니다.)-->
+    <meta http-equiv="Expires" content="-1">
+    <!--# 캐시된 페이지가 만료되어 삭제되는 시간을 정의합니다. 특별한 경우가 아니면 -1로 설정합니다.-->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.0)-->
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.1)
+    출처: https://coding-restaurant.tistory.com/339 [코딩맛집:티스토리]-->
+
+	<title>이동입고처리</title>
+	<link rel="stylesheet" href="css/setup.css?v=20220929">
+	<link rel="stylesheet" href="css/style.css?v=20220929">
+	<link rel="stylesheet" href="css/date_picker.css?v=20220929">
+	<style>
+		/*
+		[v-cloak] .v-cloak--hidden{
+		  display: none;
+		}
+		*/
+		[v-cloak]{
+		  display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div v-cloak id="app" class="main data">
+		<div class="top">
+			<div class="img" onclick="location.replace('main.html');">
+				<img src="img/btn_back.png">
+			</div>
+			<span>이동입고처리[영림원][{{pdaPort}}]</span>
+		</div>
+		<div class="data-container">
+			<div class="data-row">
+				<div class="title-row">
+					<span>출고증번호</span><span class="scan" @click="runScanner('queryForm.MoveNo');">스캔</span>
+				</div>
+				<div class="search-wrap">        
+					<input type="text" name="MoveNo" v-model="queryForm.MoveNo" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<button class="btn-style-03" @click="openMoveList();">조회</button>
+				</div>
+			</div>
+			<div class="data-wrap">
+				<div class="data-row">
+					<div class="title-row">
+						<span>차량번호</span>
+					</div>
+					<input type="text" name="CarNo" v-model="queryForm.CarNo" gx-init="addForm" gx-default="">
+				</div>
+				<div class="data-row">
+					<div class="title-row">
+						<span>이동일자</span>
+					</div>
+					<input type="text" name="MovementDate" v-model.trim="queryForm.MovementDate" gx-init="addForm" value="" validate="required:이동 희망일를 입력해주세요!" gx-datepicker="queryForm.CompleteWishDate" gx-default="">
+				</div>
+			</div>
+			<div class="toggle-row">
+				<div class="data-row">
+					<div class="title-row">
+						<span>도착지</span>
+					</div>
+					<input type="text" name="InWhName" v-model="queryForm.InWhName" gx-init="addForm" gx-default="">
+				</div>
+				<div class="data-row">
+					<div class="title-row" @click="toggle();">
+						<span>구분</span>
+					</div>
+					<div class="toggle" @click="toggle();">
+						<input type="checkbox" hidden=""> 
+						<label class="toggle-switch">
+							<span class="toggle-button"></span>
+							<span class="toggle-status default" >이동</span>
+							<span class="toggle-status move" >요청</span>
+						</label>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="data-row">
+				<div class="table" id="grid2">
+				</div>
+			</div> -->
+			<div>
+				<div class="title-row">
+					<span>Barcode</span><span class="scan" @click="runScanner('queryForm.BarCode');">스캔</span>
+				</div>
+				<div class="search-wrap">        
+					<input type="text" name="BarCode" v-model="queryForm.BarCode" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<button class="btn-style-03" @click="BarcodeSel();">조회</button>
+				</div>
+			</div>
+		</div>
+		<div class="product-info">
+			<p class="product" name="ItemName">{{QtyData.ItemName}}</p>
+			<p class="total"><span class="p-scan">{{QtyData.MovQty}}</span> / {{QtyData.Qty}}</p>
+		</div>
+		<div class="table-container">
+			<div class="btn-row">
+				<button class="btn-style-04" @click="del();">선택삭제</button>
+				<button class="btn-style-07" @click="init();">초기화</button>
+			</div>
+			<div class="data-row">
+				<div class="table table2" id="grid">
+				</div>
+			</div>
+		</div>
+
+		<div class="fixed-btn-row">
+			<button class="btn-style-05" @click="save2();">입고(저장)처리</button>
+		</div>
+
+		<div class="bg-wrap" id="info-container" gx-layer="">
+			<div class="container">
+				<button class="btn-close" @click="closeInfo();"></button>
+				<p class="title">바코드 스캔 권한 설정 정보</p>
+				<div class="scan-right-raw">
+					
+					<div class="btn-row">
+						<button class="btn-jeju" @click="copyUnsafelyUrl();">카메라 허용 설정 주소 복사</button>
+						<button class="btn-jeju" @click="copyLocationOrigin();">현재 사이트 주소 복사</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-wrap" id="scanner-container" gx-layer="">
+			<div id="qr-reader"></div>
+			<button class="bg-btn-close" @click="stopScanner();"> 
+				<img src="img/btn_close.png" alt="">
+			</button>
+		</div>
+	</div>
+</body>
+<script>
+//토글
+// $(function(){
+// 	$(".toggle-switch").click(function(){
+// 		$(this).toggleClass("active");
+// 	});
+// });
+</script>
+<script src="js/app.js?v=1652769578524" defer=""></script>
+</html>

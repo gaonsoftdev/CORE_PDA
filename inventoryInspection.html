@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+    <!--# 위의 명시된 날짜 이후가 되면 페이지가 캐싱되지 않습니다.
+    (따라서 위와 같은 날짜로 지정할 경우 페이지는 지속적으로 캐싱되지 않습니다.)-->
+    <meta http-equiv="Expires" content="-1">
+    <!--# 캐시된 페이지가 만료되어 삭제되는 시간을 정의합니다. 특별한 경우가 아니면 -1로 설정합니다.-->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.0)-->
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.1)
+    출처: https://coding-restaurant.tistory.com/339 [코딩맛집:티스토리]-->
+
+	<title>재고실사등록</title>
+	<link rel="stylesheet" href="css/setup.css?v=20220929">
+	<link rel="stylesheet" href="css/style.css?v=20220929">
+	<link rel="stylesheet" href="css/date_picker.css?v=20220929">
+	<style>
+		/*
+		[v-cloak] .v-cloak--hidden{
+		  display: none;
+		}
+		*/
+		[v-cloak]{
+		  display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div v-cloak id="app" class="main data">
+		<div class="top">
+			<div class="img" onclick="location.replace('main.html');">
+				<img src="img/btn_back.png">
+			</div>
+			<span>Inventory inspection</span>
+		</div>
+
+		<div class="data-container other">
+			<div class="row">
+				<div class="title-row">
+					<span>Storage</span><span class="scan" @click="runScanner('queryForm.Storage');">SCAN</span>
+				</div>
+				<div class="code-help">
+					<input type="text" name="Storage" v-model="queryForm.Storage" @click="openCodeHelp();" readonly>
+				</div>
+			</div>
+			<div class="row">
+				<div class="title-row">
+					<span>Product Name</span>
+				</div>
+				<div class="code-help">
+					<input type="text" name="ProductName" v-model="queryForm.ProductName" @click="openCodeHelp();" readonly>
+				</div>
+			</div>
+			<div class="row">
+				<div class="title-row">
+					<span>Product No.</span>
+				</div>
+				<div class="code-help">
+					<input type="text" name="ProductNo" v-model="queryForm.ProductNo" @click="openCodeHelp();" readonly>
+				</div>
+			</div>
+			<div class="data-row">
+				<div class="title-row">
+					<span>Lot No.</span><span class="scan" @click="runScanner('queryForm.LotNo');">SCAN</span>
+				</div> 
+				<div class="search-wrap">
+					<input type="text" name="LotNo" v-model="queryForm.LotNo" @keyup="saveFlagC" gx-scanner="Y">
+					<button class="btn-style-03" @click="LotNoSel();">Search</button>
+				</div>
+			</div>
+			<div class="row-wrap">
+				<div class="row left">
+					<div class="title-row">
+						<span>Quantity</span>
+					</div>
+					<div class="unit-wrap">
+						<input class="text-r" type="text" v-model.trim="queryForm.Qty" readonly>
+						<span class="unit">EA</span>
+					</div>
+				</div>
+				<div class="row right">
+					<div class="title-row">
+						<span>Date</span>
+					</div>
+					<input class="text-c" type="text" name="Date" v-model.trim="queryForm.Date" gx-init="addForm" value="" validate="required:이동 희망일를 입력해주세요!" gx-datepicker="queryForm.Date" gx-default="">
+				</div>
+			</div>
+			<div class="row">
+				<div class="title-row">
+					<span>Serial No.</span>
+				</div>
+				<input type="text" v-model.trim="queryForm.StkSerial" readonly>
+			</div>
+			<div class="row">
+				<div class="title-row">
+					<span>Heat No.</span>
+				</div>
+				<input type="text" v-model.trim="queryForm.HeatNo" readonly >
+			</div>
+			<div class="row">
+				<div class="title-row">
+					<span>Steel maker</span>
+				</div>
+				<input type="text" v-model.trim="queryForm.SupplyName" readonly >
+			</div>
+			<div class="row">
+				<div class="title-row">
+					<span>COBOL</span>
+				</div>
+				<input type="text" v-model.trim="queryForm.CobolCode" readonly >
+			</div>
+			<div class="btn-row">
+				<button class="btn-style-05" @click="save();">OK</button>
+			</div>
+		</div>
+
+		<div class="bg-wrap" code-help="Storage" gx-layer="">
+			<div class="code-help-con">
+				<div class="top">
+					<span>Storage</span>
+				</div>
+	
+				<div class="data-container">
+					<div class="data-row">
+						<div class="title-row">
+							<span>Storage</span>
+						</div>
+						<div class="search-wrap">
+							<input type="text" name="Storage" v-model="codeHelp.Storage" @click="focusCodeHelp('Storage');" @change="focusCodeHelp('Storage');">
+							<button class="btn-style-03" @click="searchCodeHelp('Storage');"> Search</button>
+						</div>
+					</div>
+				</div>
+				<div class="table-container">
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('Storage','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('Storage');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('Storage','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('Storage');">
+								<option value="50">50 each</option>
+								<option value="100">100 each</option>
+								<option value="150">150 each</option>
+								<option value="200">200 each</option>
+								<option value="250">250 each</option>
+								<option value="300">300 each</option>
+								<option value="350">350 each</option>
+								<option value="400">400 each</option>
+								<option value="450">450 each</option>
+								<option value="500">500 each</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="table-row">
+						<div id="grid-Storage" class="table">
+						</div>
+					</div>
+
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('Storage');">Close</button>
+						<button class="right" @click="okCodeHelp('Storage');">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-wrap" code-help="ProductName" gx-layer="">
+			<div class="code-help-con">
+				<div class="top">
+					<span>Product Name</span>
+				</div>
+		
+				<div class="data-container">
+					<div class="data-row">
+						<div class="title-row">
+							<span>Product Name</span>
+						</div>
+						<div class="search-wrap">
+							<input type="text" name="ProductName" v-model="codeHelp.ProductName" @click="focusCodeHelp('ProductName');"
+								@change="focusCodeHelp('ProductName');">
+							<button class="btn-style-03" @click="searchCodeHelp('ProductName');"> Search</button>
+						</div>
+					</div>
+				</div>
+				<div class="table-container">
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('ProductName','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1"
+									@change="searchCodeHelp('ProductName');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('ProductName','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('ProductName');">
+								<option value="50">50 each</option>
+								<option value="100">100 each</option>
+								<option value="150">150 each</option>
+								<option value="200">200 each</option>
+								<option value="250">250 each</option>
+								<option value="300">300 each</option>
+								<option value="350">350 each</option>
+								<option value="400">400 each</option>
+								<option value="450">450 each</option>
+								<option value="500">500 each</option>
+							</select>
+						</div>
+					</div>
+		
+					<div class="table-row">
+						<div id="grid-ProductName" class="table">
+						</div>
+					</div>
+		
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('ProductName');">Close</button>
+						<button class="right" @click="okCodeHelp('ProductName');">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-wrap" code-help="ProductNo" gx-layer="">
+			<div class="code-help-con">
+				<div class="top">
+					<span>Product No</span>
+				</div>
+		
+				<div class="data-container">
+					<div class="data-row">
+						<div class="title-row">
+							<span>Product No</span>
+						</div>
+						<div class="search-wrap">
+							<input type="text" name="ProductNo" v-model="codeHelp.ProductNo" @click="focusCodeHelp('ProductNo');"
+								@change="focusCodeHelp('ProductNo');">
+							<button class="btn-style-03" @click="searchCodeHelp('ProductNo');"> Search</button>
+						</div>
+					</div>
+				</div>
+				<div class="table-container">
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('ProductNo','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1"
+									@change="searchCodeHelp('ProductNo');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('ProductNo','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('ProductNo');">
+								<option value="50">50 each</option>
+								<option value="100">100 each</option>
+								<option value="150">150 each</option>
+								<option value="200">200 each</option>
+								<option value="250">250 each</option>
+								<option value="300">300 each</option>
+								<option value="350">350 each</option>
+								<option value="400">400 each</option>
+								<option value="450">450 each</option>
+								<option value="500">500 each</option>
+							</select>
+						</div>
+					</div>
+		
+					<div class="table-row">
+						<div id="grid-ProductNo" class="table">
+						</div>
+					</div>
+		
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('ProductNo');">Close</button>
+						<button class="right" @click="okCodeHelp('ProductNo');">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+		<div class="bg-wrap" id="info-container" gx-layer="">
+			<div class="container">
+				<button class="btn-close" @click="closeInfo();"></button>
+				<p class="title">바코드 스캔 권한 설정 정보</p>
+				<div class="scan-right-raw">
+					
+					<div class="btn-row">
+						<button class="btn-jeju" @click="copyUnsafelyUrl();">카메라 허용 설정 주소 복사</button>
+						<button class="btn-jeju" @click="copyLocationOrigin();">현재 사이트 주소 복사</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-wrap" id="scanner-container" gx-layer="">
+			<div id="qr-reader"></div>
+			<button class="bg-btn-close" @click="stopScanner();"> 
+				<img src="img/btn_close.png" alt="">
+			</button>
+		</div>
+	</div>
+</body>
+<script>
+//토글
+// $(function(){
+// 	$(".toggle-switch").click(function(){
+// 		$(this).toggleClass("active");
+// 	});
+// });
+</script>
+<script src="js/app.js?v=1652769578524" defer=""></script>
+</html>

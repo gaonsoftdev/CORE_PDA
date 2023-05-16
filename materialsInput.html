@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+	<!--# 위의 명시된 날짜 이후가 되면 페이지가 캐싱되지 않습니다.
+	(따라서 위와 같은 날짜로 지정할 경우 페이지는 지속적으로 캐싱되지 않습니다.)-->
+	<meta http-equiv="Expires" content="-1">
+	<!--# 캐시된 페이지가 만료되어 삭제되는 시간을 정의합니다. 특별한 경우가 아니면 -1로 설정합니다.-->
+	<meta http-equiv="Pragma" content="no-cache">
+	<!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.0)-->
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.1)
+	출처: https://coding-restaurant.tistory.com/339 [코딩맛집:티스토리]-->
+
+	<title>자재투입</title>
+	<link rel="stylesheet" href="css/setup.css?v=20220929">
+	<link rel="stylesheet" href="css/style.css?v=20220929">
+	<link rel="stylesheet" href="css/date_picker.css?v=20220929">
+	<style>
+		/*
+		[v-cloak] .v-cloak--hidden{
+		  display: none;
+		}
+		*/
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div v-cloak id="app" class="main srch">
+		<div class="top">
+			<div class="img" onclick="history.back();">
+				<img src="img/btn_back.png" alt="">
+			</div>
+			<span>자재투입</span>
+		</div> 
+
+
+		<!--Lot No-->
+		<input type="hidden" name="LotSeq" v-model="addForm.LotSeq" gx-init="addForm" gx-default="0">
+		<input type="hidden" name="LotNo" v-model="addForm.LotNo" @click="openCodeHelp();" @change="inputSearchCodeHelp();" gx-init="addForm" gx-default="">
+		<!--자재명-->
+		<input type="hidden" name="MatItemSeq" v-model="addForm.MatItemSeq" gx-init="addForm" gx-default="0">
+		<input type="hidden" name="MatItemName" v-model="addForm.MatItemName" gx-init="addForm" gx-default="" @click="openCodeHelp();" @change="inputSearchCodeHelp();">
+		<!--자재번호-->
+		<input type="hidden" name="MatItemNo" v-model="addForm.MatItemNo" gx-init="addForm" gx-default="" @click="openCodeHelp();" @change="inputSearchCodeHelp();">
+		<!--자재규격-->
+		<input type="hidden" name="MatItemSpec" v-model="addForm.MatItemSpec" gx-init="addForm" gx-default="" @click="openCodeHelp();" @change="inputSearchCodeHelp();">
+		<input type="hidden" name="Qty" v-model="addForm.Qty" gx-init="addForm" gx-default="0">
+
+		<!--투입단위-->
+		<input type="hidden" name="MatUnitSeq" v-model="addForm.MatUnitSeq" gx-init="addForm" gx-default="0">
+		<input type="hidden" name="MatUnitName" v-model="addForm.MatUnitName" gx-init="addForm" gx-default="" @click="openCodeHelp();" @change="inputSearchCodeHelp();">
+		
+		<div class="table-row input-mtrl">
+			<div class="one-button">
+				<button @click="search();">
+					<img class="src" src="img/ic_search.png" alt=""> 
+					소요자재 조회
+				</button>
+				<!--span id="temp">
+					<span grid-editor="N" @click="gridEditor('Y')" style="display:block; width:100%; height:100%; border:0; padding:0;margin:0;">aaa</span>
+					<input name="RealLotNo" grid-editor="Y"  @click="gridEditor('Y')" style="display:none; width:100%; height:100%; border:0; padding:0;margin:0;">
+				</span-->
+			</div>
+
+			<div id="grid" class="table">
+				<table>
+					<thead>
+						<tr>
+							<td rowspan="2">
+								<div class="chkBox">
+									<input type="checkbox">
+								</div>
+							</td>
+		
+							<td rowspan="2">
+								번호
+							</td>
+							<td>
+								자재명
+							</td>
+							
+							<td>
+								자재번호
+							</td> 
+							<td>
+								자재규격
+							</td> 
+							<td>
+								Lot No
+							</td> 
+							<td>
+								비고
+							</td> 
+						</tr>
+						<tr>
+							<td>
+								소요량
+							</td>
+							<td>
+								투입단위
+							</td>
+							<td>
+								투입수량
+							</td>
+							<td>
+								기본단위
+							</td>
+							<td>
+								기본수량
+							</td>
+						</tr>
+					</thead>
+					<tbody class="check">         
+						<tr>
+							<td rowspan="2">
+								<div class="chkBox">
+									<input type="checkbox">
+								</div>
+							</td>
+		
+							<td rowspan="2">
+								1
+							</td>
+							<td class="code-help">
+								자재명
+							</td>
+								
+							<td class="code-help">
+								자재번호
+							</td> 
+							<td class="code-help">
+								자재규격
+							</td> 
+							<td class="code-help">
+								Lot No
+							</td> 
+							<td>
+								비고
+							</td> 
+						</tr>
+						<tr>
+							<td class="read-only">
+								소요량
+							</td>
+							<td class="code-help">
+								투입단위
+							</td>
+							<td>
+								투입수량
+							</td>
+							<td class="read-only">
+								기본단위
+							</td>
+							<td class="read-only">
+								기본수량
+							</td>
+						</tr>
+					</tbody>
+					<tbody>         
+						<tr>
+							<td rowspan="2">
+								<div class="chkBox">
+									<input type="checkbox">
+								</div>
+							</td>
+		
+							<td rowspan="2">
+								2
+							</td>
+							<td class="code-help">
+								자재명
+							</td>
+								
+							<td class="code-help">
+								자재번호
+							</td> 
+							<td class="code-help">
+								자재규격
+							</td> 
+							<td class="code-help">
+								Lot No
+							</td> 
+							<td>
+								비고
+							</td> 
+						</tr>
+						<tr>
+							<td class="read-only">
+								소요량
+							</td>
+							<td class="code-help">
+								투입단위
+							</td>
+							<td>
+								투입수량
+							</td>
+							<td class="read-only">
+								기본단위
+							</td>
+							<td class="read-only">
+								기본수량
+							</td>
+						</tr>
+					</tbody>
+	
+				</table>
+			</div>
+
+			<div class="btn-row wid-50">
+				<button class="left" @click="save();">자재투입</button>
+				<button class="right" @click="del();">자재투입취소</button>
+			</div>
+		</div>
+		
+
+    	<div class="bg-wrap" code-help="LotNo" gx-layer="">
+			<div class="code-help-con">
+				<div class="code-help-top">
+					<span>LotNo 선택</span>
+				</div>
+	
+				<div class="code-help-main">
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>LotNo</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="LotNo" v-model="codeHelp.LotNo" @click="focusCodeHelp('LotNo');" @change="focusCodeHelp('LotNo');">
+						</li>
+					</ul>
+
+					<div class="code-help-button-row">
+						<button @click="searchCodeHelp('LotNo');"> <img src="img/ic_search.png" alt=""> 조회하기</button>
+					</div>
+					
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('LotNo','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('LotNo');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('LotNo','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('LotNo');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+	
+					<div class="table-row">
+						<div id="grid-lotno" class="table">
+						</div>
+					</div>
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('LotNo');">닫기</button>
+						<button class="right" @click="selectedApplyCodeHelp('LotNo');">선택하기</button>
+				    </div>
+				</div>
+			</div>
+		</div>
+
+
+    	<div class="bg-wrap" code-help="MatItemName" gx-layer="">
+			<div class="code-help-con">
+				<div class="code-help-top">
+					<span>자재명 선택</span>
+				</div>
+	
+				<div class="code-help-main">
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>자재명</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="MatItemName" v-model="codeHelp.MatItemName" @click="focusCodeHelp('MatItemName');" @change="focusCodeHelp('MatItemName');">
+						</li>
+					</ul>
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>자재품번</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="MatItemNo" v-model="codeHelp.MatItemNo" @click="focusCodeHelp('MatItemNo');" @change="focusCodeHelp('MatItemNo');">
+						</li>
+					</ul>
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>자재규격</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="MatItemSpec" v-model="codeHelp.MatItemSpec" @click="focusCodeHelp('MatItemSpec');" @change="focusCodeHelp('MatItemSpec');">
+						</li>
+					</ul>
+
+
+					<div class="code-help-button-row">
+						<button @click="searchCodeHelp('MatItemName');"> <img src="img/ic_search.png" alt=""> 조회하기</button>
+					</div>
+					
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('MatItemName','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('MatItemName');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('MatItemName','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('MatItemName');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="table-row">
+						<div id="grid-matitemname" class="table three-condition">
+						</div>
+					</div>
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('MatItemName');">닫기</button>
+						<button class="right" @click="selectedApplyCodeHelp('MatItemName');">선택하기</button>
+				    </div>
+				</div>
+			</div>
+		</div>
+
+		
+    	<div class="bg-wrap" code-help="MatUnitName" gx-layer="">
+			<div class="code-help-con">
+				<div class="code-help-top">
+					<span>투입단위 선택</span>
+				</div>
+	
+				<div class="code-help-main">
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>투입단위</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="MatUnitName" v-model="codeHelp.MatUnitName" @click="focusCodeHelp('MatUnitName');" @change="focusCodeHelp('MatUnitName');">
+						</li>
+					</ul>
+					<div class="code-help-button-row">
+						<button @click="searchCodeHelp('MatUnitName');"> <img src="img/ic_search.png" alt=""> 조회하기</button>
+					</div>
+					
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('MatUnitName','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('MatUnitName');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('MatUnitName','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('MatUnitName');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="table-row">
+						<div id="grid-matunitname" class="table">
+						</div>
+					</div>
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('MatUnitName');">닫기</button>
+						<button class="right" @click="selectedApplyCodeHelp('MatUnitName');">선택하기</button>
+				    </div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	
+	<script src="js/app.js?v=1652769578524" defer=""></script>
+</body>
+</html>

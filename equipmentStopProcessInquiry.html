@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+	<!--# 위의 명시된 날짜 이후가 되면 페이지가 캐싱되지 않습니다.
+	(따라서 위와 같은 날짜로 지정할 경우 페이지는 지속적으로 캐싱되지 않습니다.)-->
+	<meta http-equiv="Expires" content="-1">
+	<!--# 캐시된 페이지가 만료되어 삭제되는 시간을 정의합니다. 특별한 경우가 아니면 -1로 설정합니다.-->
+	<meta http-equiv="Pragma" content="no-cache">
+	<!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.0)-->
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.1)
+	출처: https://coding-restaurant.tistory.com/339 [코딩맛집:티스토리]-->
+
+	<title>장비비가동조회</title>
+	<link rel="stylesheet" href="css/setup.css?v=20220929">
+	<link rel="stylesheet" href="css/style.css?v=20220929">
+	<link rel="stylesheet" href="css/date_picker.css?v=20220929">
+	<style>
+		/*
+		[v-cloak] .v-cloak--hidden{
+		  display: none;
+		}
+		*/
+		[v-cloak]{
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div v-cloak id="app" class="main srch">
+		<div class="top">
+			<div class="img" onclick="history.back();">
+				<img src="img/btn_back.png" alt="">
+			</div>
+			<span>장비비가동조회</span>
+		</div> 
+
+		<div class="input-wrap">
+			<p class="title">비가동기간</p>
+			<div class="input-row twoCmprt">    
+				<div class="left">
+					<ul>
+						<li class="name lb-wid-70">
+							<label>시작일</label>
+						</li>
+						<li class="input-data lb-wid-70">
+							<input type="text" name="WorkDateFr" v-model.trim="listQueryForm.WorkDateFr" value="" gx-init="queryForm" gx-default="" gx-datepicker="listQueryForm.WorkDateFr">
+						</li>
+					</ul>
+				</div>
+				<div class="mid"><span>-</span></div>
+				<div class="right">
+					<ul>
+						<li class="name lb-wid-70">
+							<label>종료일</label>
+						</li>
+						<li class="input-data lb-wid-70">
+							<input type="text" name="WorkDateTo" v-model.trim="listQueryForm.WorkDateTo" value="" gx-init="queryForm" gx-default="" gx-datepicker="listQueryForm.WorkDateTo">
+						</li>
+					</ul>
+				</div>
+				
+			</div>
+
+			<div class="input-row twoCmprt mg-top-10">    
+				<div class="left">
+					<ul>
+						<li class="name lb-wid-70">
+							<label>사원명</label>
+						</li>
+						<li class="input-data lb-wid-70 code-help">
+							<input type="hidden" name="EmpSeq" v-model="listQueryForm.EmpSeq" gx-init="queryForm" gx-default="0">
+							<input type="text" name="EmpName" v-model="listQueryForm.EmpName" value="" gx-init="queryForm" gx-default="" @click="openCodeHelp();" @change="inputSearchCodeHelp();">
+						</li>
+					</ul>
+				</div>
+				<div class="right">
+					<ul>
+						<li class="name lb-wid-70">
+							<label>근무조</label>
+						</li>
+						<li class="input-data lb-wid-70 code-help">
+							<input type="hidden" name="WkTeamSeq" v-model="listQueryForm.WkTeamSeq" gx-init="queryForm" gx-default="0">
+							<input type="text" name="WkTeamName" v-model="listQueryForm.WkTeamName" value="" gx-init="queryForm" gx-default="" @click="openCodeHelp();" @change="inputSearchCodeHelp();">
+						</li>
+					</ul>
+				</div>
+				
+			</div>
+			
+			<ul class="input-row">
+				<li class="name lb-wid-95">
+					<label>중단구분</label>
+				</li>
+				<li class="input-data lb-wid-95 code-help">
+					<input type="hidden" name="StopType" v-model="listQueryForm.StopType" gx-init="queryForm" gx-default="0">
+					<input type="text" name="StopTypeName" v-model="listQueryForm.StopTypeName" value="" gx-init="queryForm" gx-default="" @click="openCodeHelp();" @change="inputSearchCodeHelp();">
+				</li>
+			</ul>
+			<ul class="input-row">
+				<li class="name lb-wid-95">
+					<label>중단코드</label>
+				</li>
+				<li class="input-data lb-wid-95 code-help">
+					<input type="hidden" name="StopReason" v-model="listQueryForm.StopReason" gx-init="queryForm" gx-default="0">
+					<input type="text" name="StopReasonName" v-model="listQueryForm.StopReasonName" value="" gx-init="queryForm" gx-default="" @click="openCodeHelp();" @change="inputSearchCodeHelp();">
+				</li>
+			</ul>
+			
+			<div class="btn-row">
+				<button class="left" @click="init();">초기화</button>
+				<button class="right" @click="search();">
+					<img class="src" src="img/ic_search.png" alt=""> 
+					조회하기
+				</button>
+			</div>
+		</div>
+
+		<div class="table-row">
+			<div id="grid" class="table threeRow">
+				<table>
+					<thead>
+						<tr>
+							<td rowspan="3">번호</td>
+							<td>비가동일</td>
+							<td>중단구분</td>
+							<td>중단코드</td>                            
+						</tr>
+						<tr>
+							<td>시작시간</td>
+							<td colspan="4">고장원인</td>
+						</tr>	
+						<tr>
+							<td>종료시간</td>
+							<td colspan="4">수리내역</td>
+						</tr>	
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="3">번호</td>
+							<td>비가동일</td>
+							<td>중단구분</td>
+							<td>중단코드</td>                            
+						</tr>
+						<tr>
+							<td>시작시간</td>
+							<td colspan="4">고장원인</td>
+						</tr>	
+						<tr>
+							<td>종료시간</td>
+							<td colspan="4">수리내역</td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td rowspan="3">번호</td>
+							<td>비가동일</td>
+							<td>중단구분</td>
+							<td>중단코드</td>                            
+						</tr>
+						<tr>
+							<td>시작시간</td>
+							<td colspan="4">고장원인</td>
+						</tr>	
+						<tr>
+							<td>종료시간</td>
+							<td colspan="4">수리내역</td>
+						</tr>
+					</tbody>
+					<tbody>
+						<tr>
+							<td rowspan="3">번호</td>
+							<td>비가동일</td>
+							<td>중단구분</td>
+							<td>중단코드</td>                            
+						</tr>
+						<tr>
+							<td>시작시간</td>
+							<td colspan="4">고장원인</td>
+						</tr>	
+						<tr>
+							<td>종료시간</td>
+							<td colspan="4">수리내역</td>
+						</tr>
+					</tbody>
+						
+				</table>
+					
+			</div>
+
+		</div>
+
+
+		<div class="bg-wrap" code-help="EmpName" gx-layer="">
+			<div class="code-help-con">
+				<div class="code-help-top">
+					<span>작업자 선택</span>
+				</div>
+	
+				<div class="code-help-main">
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>작업자</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="EmpName" v-model="codeHelp.EmpName" @click="focusCodeHelp('EmpName');" @change="focusCodeHelp('EmpName');">
+						</li>
+					</ul>
+	
+					<div class="code-help-button-row">
+						<button @click="searchCodeHelp('EmpName');"> <img src="img/ic_search.png" alt=""> 조회하기</button>
+					</div>
+					
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('EmpName','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('EmpName');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('EmpName','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('EmpName');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="table-row">
+						<div id="grid-empname" class="table">
+						</div>
+					</div>
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('EmpName');">닫기</button>
+						<button class="right" @click="selectedApplyCodeHelp('EmpName');">선택하기</button>
+				   </div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="bg-wrap" code-help="WkTeamName" gx-layer="">
+			<div class="code-help-con">
+				<div class="code-help-top">
+					<span>근무조 선택</span>
+				</div>
+	
+				<div class="code-help-main">
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>근무조</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="WkTeamName" v-model="codeHelp.WkTeamName" @click="focusCodeHelp('WkTeamName');" @change="focusCodeHelp('WkTeamName');">
+						</li>
+					</ul>
+	
+					<div class="code-help-button-row">
+						<button @click="searchCodeHelp('WkTeamName');"> <img src="img/ic_search.png" alt=""> 조회하기</button>
+					</div>
+					
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('WkTeamName','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('WkTeamName');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('WkTeamName','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('WkTeamName');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+	
+					<div class="table-row">
+						<div id="grid-wkteamname" class="table">
+						</div>
+					</div>
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('WkTeamName');">닫기</button>
+						<button class="right" @click="selectedApplyCodeHelp('WkTeamName');">선택하기</button>
+				   </div>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="bg-wrap" code-help="UMNonWorkTypeLName" gx-layer="">
+			<div class="code-help-con">
+				<div class="code-help-top">
+					<span>중단구분 선택</span>
+				</div>
+
+				<div class="code-help-main">
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>중단구분</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="UMNonWorkTypeLName" v-model="codeHelp.UMNonWorkTypeLName" @click="focusCodeHelp('UMNonWorkTypeLName');" @change="focusCodeHelp('UMNonWorkTypeLName');">
+						</li>
+					</ul>
+
+					<div class="code-help-button-row">
+						<button @click="searchCodeHelp('UMNonWorkTypeLName');"> <img src="img/ic_search.png" alt=""> 조회하기</button>
+					</div>
+					
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('UMNonWorkTypeLName','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('UMNonWorkTypeLName');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('UMNonWorkTypeLName','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('UMNonWorkTypeLName');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+	
+					<div class="table-row">
+						<div id="grid-umnonworktypelname" class="table">
+						</div>
+					</div>
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('UMNonWorkTypeLName');">닫기</button>
+						<button class="right" @click="selectedApplyCodeHelp('UMNonWorkTypeLName');">선택하기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-wrap" code-help="UMNonWorkTypeSName" gx-layer="">
+			<div class="code-help-con">
+				<div class="code-help-top">
+					<span>중단코드 선택</span>
+				</div>
+
+				<div class="code-help-main">
+					<ul class="input-row">
+						<li class="name lb-wid-95">
+							<label>중단코드</label>
+						</li>
+						<li class="input-data lb-wid-95">
+							<input type="text" name="UMNonWorkTypeSName" v-model="codeHelp.UMNonWorkTypeSName" @click="focusCodeHelp('UMNonWorkTypeSName');" @change="focusCodeHelp('UMNonWorkTypeSName');">
+						</li>
+					</ul>
+
+					<div class="code-help-button-row">
+						<button @click="searchCodeHelp('UMNonWorkTypeSName');"> <img src="img/ic_search.png" alt=""> 조회하기</button>
+					</div>
+					
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('UMNonWorkTypeSName','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1" @change="searchCodeHelp('UMNonWorkTypeSName');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('UMNonWorkTypeSName','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('UMNonWorkTypeSName');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+	
+					<div class="table-row">
+						<div id="grid-umnonworktypesname" class="table">
+						</div>
+					</div>
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('UMNonWorkTypeSName');">닫기</button>
+						<button class="right" @click="selectedApplyCodeHelp('UMNonWorkTypeSName');">선택하기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+	</div>
+	
+	<script src="js/app.js?v=1652769578524" defer=""></script>
+</body>
+</html>

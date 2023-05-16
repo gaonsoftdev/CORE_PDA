@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+    <!--# 위의 명시된 날짜 이후가 되면 페이지가 캐싱되지 않습니다.
+    (따라서 위와 같은 날짜로 지정할 경우 페이지는 지속적으로 캐싱되지 않습니다.)-->
+    <meta http-equiv="Expires" content="-1">
+    <!--# 캐시된 페이지가 만료되어 삭제되는 시간을 정의합니다. 특별한 경우가 아니면 -1로 설정합니다.-->
+    <meta http-equiv="Pragma" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.0)-->
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <!--# 페이지 로드시마다 페이지를 캐싱하지 않습니다. (HTTP 1.1)
+    출처: https://coding-restaurant.tistory.com/339 [코딩맛집:티스토리]-->
+
+    <title>메인 메뉴</title>
+	<link rel="stylesheet" href="css/setup.css?v=20220929">
+	<link rel="stylesheet" href="css/style.css?v=20220929">
+	<link rel="stylesheet" href="css/date_picker.css?v=20220929">
+	<style>
+		/*
+		[v-cloak] .v-cloak--hidden{
+		  display: none;
+		}
+		*/
+		[v-cloak]{
+		  display: none;
+		}
+
+	</style>
+</head>
+<body>
+    <div v-cloak id="app">
+        <div class="top">
+            <div class="img" @click="logout();">
+                 <img src="img/btn_back.png" alt="">
+            </div>
+            <span>Main</span>
+        </div>
+        
+        <div class="main">
+			<div class="menu" v-for="idx in clusterIndexes">
+				<!-- <div class="menu-title">{{idx}}</div> -->
+				<div class="list-wrap">
+					<div class="list" @click="goPage(row.pageUrl);" v-for="row in clustering[idx]">
+						<img :src="row.iconImg" alt="">
+						<p class="name">&nbsp;{{row.subTitle}}</p>
+					</div>
+				</div>
+			</div>
+        </div>
+
+        <div class="access-alarm">
+            <!-- <p>{{deptName}} {{userName}}님이 접속하셨습니다. <a href="javascript:void(0);" @click="logout();">[로그아웃]</a></p> -->
+            <p>Hello, {{userName}}!!</p>
+        </div>
+    </div>
+	<script src="js/app.js?v=1652769578524" defer=""></script>
+</body>
+</html>
