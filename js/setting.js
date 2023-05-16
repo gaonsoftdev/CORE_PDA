@@ -13,12 +13,8 @@ var app = new Vue({
 	methods:{
 		save: function(){
 			for(let i in this.settingItems){
-				if(this.settingItems.hasOwnProperty(i)){
-					if(i == 'serverAddr'){
-						GX.Storage.set('gx_' + i, this.settingItems[i]+':'+this.settingItems.port);
-					}else{
-						GX.Storage.set('gx_' + i, this.settingItems[i]);
-					}
+				if(this.settingItems.hasOwnProperty(i)){\
+					GX.Storage.set('gx_' + i, this.settingItems[i]);
 					// GX.Cookie.set('DBName', document.querySelector('[name="DBName"]').value, 365*100);
 				}
 			}
