@@ -82,6 +82,8 @@ var app = new Vue({
 		else {
 			this.deptName = GX.Cookie.get('DeptName');
 			this.userName = GX.Cookie.get('UserName');
+			this.empName = GX.Cookie.get('EmpName');
+			
 			//console.log('aaaaaaaaaaaa' + this.userName);
 			//GX.SpinnerBootstrap.init();
 			GX.SpinnerBootstrap.init('loading', 'loading-wrap', '<div class="container"><img src="img/loading.gif" alt=""><span>처리중입니다...</span></div>');
