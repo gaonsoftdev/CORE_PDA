@@ -13,7 +13,7 @@ var app = new Vue({
 	methods:{
 		save: function(){
 			for(let i in this.settingItems){
-				if(this.settingItems.hasOwnProperty(i)){\
+				if(this.settingItems.hasOwnProperty(i)){
 					GX.Storage.set('gx_' + i, this.settingItems[i]);
 					// GX.Cookie.set('DBName', document.querySelector('[name="DBName"]').value, 365*100);
 				}
@@ -188,7 +188,7 @@ var app = new Vue({
 			if(this.settingItems.hasOwnProperty(i) && GX.Storage.data.hasOwnProperty(key)) this.settingItems[i] = GX.Storage.get(key);
 		}
 
-		this.settingItems.serverAddr = this.settingItems.serverAddr.replace(':'+this.settingItems.port,'');
+		// this.settingItems.serverAddr = this.settingItems.serverAddr.replace(':'+this.settingItems.port,'');
 		
 		// select box에 scannr enter evnet 막기 시작 /////////////
 		GX.SelectBoxEnterPrevention.init();

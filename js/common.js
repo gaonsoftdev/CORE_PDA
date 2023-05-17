@@ -23,13 +23,13 @@ GX._DATAS_ = {
 		// }
 		get:'{certId:KNICDEV,certKey:KNIC,dsnOper:?,dsnBis:?,dsn:?,workingTag:,securityType:1,isDebug:0,companySeq:?,languageSeq:1,serviceId:IsStoredProcedure,methodId:?,hostComputername:,hostIPAddress:,userId:?,userPwd:,empSeq:?}',
 		post:{
-			"certId":"GWGAON",
-			"certKey":"99VPPGDMOFYLT1X9",
-			"dsnOper":"tdi_oper",
-			"dsnBis":"tdi_bis",
+			"certId":"Core_APIIntegration",
+			"certKey":"EM2NKTZDQ5J7UYF0NPD603QXBSDL8VZR",
+			"dsnOper":"core_oper",
+			"dsnBis":"core_bis",
 			// "dsn":"",
 			"securityType":0,
-			"companySeq":3, //1
+			"companySeq":1, //1
 			"languageSeq":1,
 			"userId":"",
 			// "DBName":""
@@ -91,7 +91,7 @@ GX._METHODS_ = {
 		if(this.isLogin()){
 			// this.setSecurityProperty('empSeq', GX.Cookie.get('EmpSeq'));
 			this.setSecurityProperty('userId', GX.Cookie.get('UserId'));
-			this.setSecurityProperty('companySeq', '3');
+			this.setSecurityProperty('companySeq', '1');
 
 			this.setBaseDataBlockProperty('UserId', GX.Cookie.get('UserId'));
 			this.setBaseDataBlockProperty('CompanySeq', GX.Cookie.get('CompanySeq'));
@@ -99,10 +99,10 @@ GX._METHODS_ = {
 		else{
 			// this.setSecurityProperty('empSeq', '');
 			this.setSecurityProperty('userId', '');
-			this.setSecurityProperty('companySeq', '3');
+			this.setSecurityProperty('companySeq', '1');
 
 			this.setBaseDataBlockProperty('UserId', '');
-			this.setBaseDataBlockProperty('CompanySeq', '3');
+			this.setBaseDataBlockProperty('CompanySeq', '1');
 		}
 
 		this.setSecurityProperty('methodId', methodId);
@@ -112,8 +112,8 @@ GX._METHODS_ = {
 			let dsn = GX.Storage.get('gx_dsn');
 			let anotherDsn = (methodId == 'Login') ? dsn : GX.Storage.get('gx_anotherDsn');
 
-			// this.setSecurityProperty('dsnOper', dsn);
-			// this.setSecurityProperty('dsnBis', dsn);
+			this.setSecurityProperty('dsnOper', 'core_oper');
+			this.setSecurityProperty('dsnBis', 'core_bis');
 			// this.setSecurityProperty('dsn', anotherDsn); // dsn : knicdev_bis or dsn : knicdev_oper
 		}
 
@@ -177,7 +177,11 @@ GX._METHODS_ = {
 			//console.log(this.params);
 			GX.SpinnerBootstrap.show();
 			
-			
+			console.log("GX.Storage.get('gx_serverAddr')",GX.Storage.get('gx_serverAddr'));
+			console.log("GX._DATAS_.ajaxUrl[method]", GX._DATAS_.ajaxUrl[method]);
+			console.log("param", params[method]);
+			console.log("config[method]", config[method]);
+			console.log("method", method);
 
 			axios[method](GX.Storage.get('gx_serverAddr') + GX._DATAS_.ajaxUrl[method], params[method], config[method]).then((response) => {
 				try{

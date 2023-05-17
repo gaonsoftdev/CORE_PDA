@@ -16,16 +16,16 @@ var app = new Vue({
 		autoSettings: function(){
 			let sDsn = 'knicdev_oper';
 			let sWork = 'KNIC DEV';
-			let serverAddr = (this.params.mode != null && this.params.mode == 'dev') ? 'http://192.168.205.20:8113' : 'http://222.97.61.224:8100';
+			let serverAddr = (this.params.mode != null && this.params.mode == 'dev') ? 'http://211.253.28.15:8080' : 'http://222.97.61.224:8100';
 			if(GX._DATAS_.ajaxHeaders != null){
-				if(serverAddr == 'http://192.168.205.20:8113') GX._DATAS_.ajaxHeaders.guid = 'CB211D39-F77E-E111-BDAF-0010182FC8D5';
+				if(serverAddr == 'http://211.253.28.15:8080') GX._DATAS_.ajaxHeaders.guid = 'CB211D39-F77E-E111-BDAF-0010182FC8D5';
 				else if(serverAddr == 'http://222.97.61.224:8100'){
 					GX._DATAS_.ajaxHeaders.guid = '4CB521B9-3ACC-DF11-A3B6-001A6424E3C6';
 					sDsn = 'jpdc_oper';
-					sWork = '대창단조';
+					sWork = '코아전기';
 				}
 			}
-			else serverAddr = 'http://192.168.205.20:8113';
+			else serverAddr = 'http://211.253.28.15:8080';
 
 			console.log('mode',this.params.mode, GX._DATAS_.ajaxHeaders)
 			//let settingItems = {dsn:'knicdev_oper', work:'KNIC DEV', serverAddr:'http://192.168.205.20:8111', anotherDsn:''};
@@ -56,7 +56,7 @@ var app = new Vue({
 				// this.userHP = document.querySelector('[name="UserHP"]').value;
 				// this.userHP = '01068030132';
 				GX._METHODS_
-				.setMethodId('Genuine.tdiModuleName.BisSIIntegratedAPI_tdi/Login')
+				.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/Login')
 				.ajax([params], [function(data){
 					//if(data[0] != null && data[0].UserSeq != null){
 					console.log('data',data);
@@ -105,12 +105,12 @@ var app = new Vue({
 		checkId: function(){
 			var vThis = this;
 			GX._METHODS_
-			.setMethodId('Genuine.tdiModuleName.BisSIIntegratedAPI_tdi/GetBizUnit')
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/GetBizUnit')
 			.ajax([{}], [function(data){
 				console.log(data);
 				vThis.rows['IDCheck'] = (data[0] != null && data[0].Result != null) ? [] : data;
 				if(data.length == 1) {
-					vThis.companySeq = data[0].UCOmpanySeq;
+					vThis.companySeq = data[0].UCompanySeq;
 					GX.Storage.set('gx_anotherDsn', data[0].Dsn); 
 				}
 				else {
