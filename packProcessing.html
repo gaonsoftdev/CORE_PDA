@@ -56,7 +56,7 @@
 				</div>
 				<div class="search-wrap">        
 					<input type="text" name="DVReqNo" v-model="queryForm.DVReqNo" gx-scanner="Y" gx-init="addForm" gx-default="">
-					<button class="btn-style-03" name="Storage" @click="openCodeHelp();">조회</button>
+					<button class="btn-style-03" name="DVReqNo" @click="openCodeHelp();">조회</button>
 				</div>
 			</div>
 
@@ -97,21 +97,21 @@
 			</button>
 		</div>
 
-		<div class="bg-wrap" code-help="Storage" gx-layer="">
+		<div class="bg-wrap" code-help="DVReqNo" gx-layer="">
 			<div class="code-help-con">
 				<div class="top">
-					<span>Storage</span>
+					<span>DVReqNo</span>
 				</div>
 		
 				<div class="data-container">
 					<div class="data-row">
 						<div class="title-row">
-							<span>Storage</span>
+							<span>창고</span>
 						</div>
 						<div class="search-wrap">
 							<input type="text" name="Storage" v-model="codeHelp.Storage" @click="focusCodeHelp('Storage');"
 								@change="focusCodeHelp('Storage');">
-							<button class="btn-style-03" @click="searchCodeHelp('Storage');"> Search</button>
+							<button class="btn-style-03" @click="searchCodeHelp('Storage');"> 조회</button>
 						</div>
 					</div>
 				</div>
@@ -141,14 +141,14 @@
 						</div>
 					</div>
 		
-					<div class="table-row">
+					<div class="data-row">
 						<div id="grid-Storage" class="table">
 						</div>
 					</div>
 		
 					<div class="btn-row">
 						<button class="left" @click="closeCodeHelp('Storage');">Close</button>
-						<button class="right" @click="okCodeHelp('Storage');">OK</button>
+						<button class="right" @click="okCodeHelp('DVReqNo');">OK</button>
 					</div>
 				</div>
 			</div>

@@ -161,3 +161,7 @@
     border-radius: 1rem;
     padding: 0 1rem;
 }
+
+.main .table-row .table table .check td {
+  background-color: #DDF1FF;
+}

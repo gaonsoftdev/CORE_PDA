@@ -177,12 +177,6 @@ GX._METHODS_ = {
 			//console.log(this.params);
 			GX.SpinnerBootstrap.show();
 			
-			console.log("GX.Storage.get('gx_serverAddr')",GX.Storage.get('gx_serverAddr'));
-			console.log("GX._DATAS_.ajaxUrl[method]", GX._DATAS_.ajaxUrl[method]);
-			console.log("param", params[method]);
-			console.log("config[method]", config[method]);
-			console.log("method", method);
-
 			axios[method](GX.Storage.get('gx_serverAddr') + GX._DATAS_.ajaxUrl[method], params[method], config[method]).then((response) => {
 				try{
 					// if(response != null && response.status == 200 && response.statusText == 'OK'){

@@ -1,17 +1,16 @@
 var html5QrCode = null;
 var app = new Vue({
 	el: '#app',
-	data:{
+	data: {
 		params: GX.getParameters(),
-		convertKeys:{
-			ReqQty:'quantity2'
+		convertKeys: {
+			ReqQty: 'quantity2'
 		},
-		rows:{
-			'WHName':[],
-			'UnitName':[],
-			'Query':[],
-			'itemNoListQuery':[],
-			'MoveData':[]
+		rows: {
+			'WHName': [],
+			'UnitName': [],
+			'Query': [],
+			'storageListQuery':[],
 		},
 		queryForm:{
 			Date:'',
@@ -111,23 +110,37 @@ var app = new Vue({
 				alert('조회된 정보가 없습니다.');
 				return false;
 			}
-			let params = { QryType: 'NewSave', Gubun: 'IDD_PAL_INF', SendType: '1', BaseDate:vThis.queryForm.BaseDate.replaceAll('-', ''), };
-			let newData = [];
-			let queryData = GX.deepCopy(this.rows.Query);
-			for(let qi in queryData){
-				if(queryData.hasOwnProperty(qi)){
-					newData.push(Object.assign(queryData[qi], params));
+			let ItemList = GX.deepCopy(this.rows.Query);
+			let params = [];
+			let param = {};
+			for(let i in ItemList){
+				if(ItemList.hasOwnProperty(i) && i > 0){
+					param = {};
+					param.UCompanySeq = GX.Cookie.get('UCompanySeq'),
+					param.DVReqSeq = ItemList[i].DVReqSeq;
+					param.DVReqSerl = ItemList[i].DVReqSerl;
+					param.ItemSeq = ItemList[i].ItemSeq;
+					param.UnitSeq = ItemList[i].UnitSeq;
+					param.LotNo = ItemList[i].LotNo;
+					param.Qty = ItemList[i].Qty;
+					param.WHSeq = ItemList[i].WHSeq;
+					param.EmpSeq = GX.Cookie.get('EmpSeq'),
+					params.push(param);
 				}
 			}
-			// inputData.BaseDate = inputData.BaseDate.replaceAll('-','');
-			// inputData.PalletNo = inputData.BarCode;
+			
 			GX._METHODS_
-			.setMethodId('PalletInfo')
-			.ajax(newData, [function(data){
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/InvoiceProc')
+			.ajax(params, [function(data){
 				console.log(data);
-				// if(data.length>0){
-				// 	vThis.queryForm.BarCode = '';
-				// }
+				if(data != null && data.length > 0){
+					if (data[0].ErrCode == 99999) {
+						alert(data[0].ErrMessage);	
+					} else {
+						alert('처리되었습니다.');
+					}
+					
+				}
 			}]);
 			this.init();
 		},
@@ -617,6 +630,18 @@ var app = new Vue({
 
 			// });
 		},
+		okCodeHelp: function (targetName) { 
+			let obj = document.querySelector('#grid-' + (targetName) + ' tbody tr.click');
+			if (targetName == 'Storage') {
+				this.queryForm[targetName] = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHName;
+				this.queryForm.StorageCode = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHSeq;
+			} else {
+				this.queryForm.ProductName = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemName;
+				this.queryForm.DVReqNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].DVReqNo;
+				this.queryForm.ProductSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemSeq;
+			}
+			this.closeCodeHelp(targetName);
+		},
 		closeCodeHelp: function(targetName){
 			let obj = document.querySelector('[code-help="'+targetName+'"]');
 			if(obj != null) {
@@ -704,7 +729,7 @@ var app = new Vue({
 			if(pageCountObj != null && pageCountObj.value.match(/^[^0]\d*$/) == null) pageCountObj.value = 1;
 			params.PageCount = (pageCountObj != null) ? pageCountObj.value : 1;
 			params.PageSize = (pageSizeObj != null) ? pageSizeObj.value : 50;
-
+			params.UCompanySeq = GX.Cookie.get('UCompanySeq');
 			var vThis = this;
 			GX._METHODS_
 			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/WHCodeHelp')
@@ -863,9 +888,9 @@ var app = new Vue({
 			.init()
 			.bodyRow('@click="selectCodeHelp(index);"')
 			.item('SerialNo').head('NO.', 'num text-c')
-			.item('WHName').head('storage', '')
-			.item('WHSeq').head('storage code', '')
-			.loadTemplate('#grid-Storage', 'rows.StorageListQuery');
+			.item('WHName').head('창고명', '')
+			.item('WHSeq').head('창고코드', '')
+			.loadTemplate('#grid-Storage', 'rows.storageListQuery');
 
 			GX.VueGrid
 			.init()
