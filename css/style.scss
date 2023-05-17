@@ -53,12 +53,7 @@ body {
 	-ms-user-select: all;
 	user-select: all
 }
-.text-c{
-	text-align: center;
-}
-.text-r{
-	text-align: right;
-}
+
 .dp-none {
 	display: none;
 }
@@ -75,19 +70,14 @@ input, select{
 	font-family: 'AppleSDGothicNeoB';
 }
 
-input[type="text"], input[type="tel"]{
+input[type="text"]{
 	border-radius: 1rem;
 	border: 0.1rem solid #CCCCCC;
-	background-color: white;
+	background-color: #fff;
 	line-height: 3.4rem;
 	font-size: 1.5rem;
 	padding: 0 1rem;
 	width: 100%;
-}
-
-input[type="text"]:read-only{
-	color: #999999;
-	background-color: #F1F1F1;
 }
 
 select{	
@@ -97,7 +87,7 @@ select{
 
 table{
 	width: 100%;
-	background-color: white;
+	background-color: #fff;
 	border-collapse: separate;
     border-spacing: 0;
 
@@ -121,7 +111,7 @@ table{
 		position: sticky;
 		top: 0;
 		z-index: 2;
-		color: white;
+		color: #fff;
 	}
 
 	tbody{
@@ -131,13 +121,11 @@ table{
 		}
 		.text-c{
 			text-align: center;
+			padding: 0 1rem;
 		}
 		.text-r{
 			text-align: right;
 		}
-	}
-	.click{
-		background-color: #DDF1FF;
 	}
 }
 
@@ -151,7 +139,7 @@ input[type="checkbox"] {
 	height: 2.0rem;
 	border: 0.1rem solid #3C4784;
 	border-radius: 0.6rem;
-	background-color: white;
+	background-color: #fff;
 	position: relative;
 }
 
@@ -191,7 +179,7 @@ input[type=radio]{
 	width: 2rem;
 	height: 2rem;
 	border: 0.1rem solid #707070;
-	background-color: white;
+	background-color: #fff;
 	border-radius: 100%;
 	vertical-align: bottom;
 	position: relative;
@@ -221,73 +209,12 @@ input[type=radio]{
 
 }
 
-.toggle{
-	display: inline-block;
-	.toggle-switch {
-		width: 8rem;
-		height: 3.4rem;
-		display: block;
-		position: relative;
-		border-radius: 2rem;
-		background-color: $point-Col-03;
-		line-height: 3.4rem;
-		text-align: left;
-
-		.toggle-button {
-			width: 2.6rem;
-			height: 2.6rem;
-			position: absolute;
-			top: 50%;
-			left: calc(100% - 3rem);
-			transform: translateY(-50%);
-			border-radius: 50%;
-			background: white;
-		}
-		.toggle-status{
-			margin-left: 1.2rem;
-			color: white;
-			font-family: 'NotoSansKR-Regular';
-			vertical-align: middle;
-			line-height: 3.4rem;
-			font-size: 1.5rem;
-			font-family: 'AppleSDGothicNeoB';
-			display: none;
-
-			&.default{
-				display: inline;
-			}
-			&.move{
-				display: none;
-			}
-		}
-
-		&.active{
-			.toggle-status{
-				margin-left: 3.9rem;
-				&.default{
-					display: none;
-				}
-				&.move{
-					display: inline;
-				}
-			}
-			
-			.toggle-button {
-				left: 0.4rem;
-				background: #fff;
-				transition: all 0.2s ease-in;
-			}
-		}
-	}                          
-
-}
-
 
 .btn-style-01{
 	background-color: $point-Col-01;
 	width: 100%;
 	height: 5rem;
-	color: white;
+	color: #fff;
 	border: none;
 	border-radius: 1.4rem;
 	font-size: 1.7rem;
@@ -299,7 +226,7 @@ input[type=radio]{
 	line-height: 3rem;
 	background-color: $point-Col-01;
 	border-radius: 1.5rem;
-	color: white;
+	color: #fff;
 }
 
 .btn-style-03{
@@ -307,14 +234,14 @@ input[type=radio]{
 	line-height: 3.4rem;
 	background-color: $point-Col-03;
 	border-radius: 1rem;
-	color: white;
+	color: #fff;
 }
 
 .btn-style-04{
 	width: 9rem;
 	height: 3.4rem;
 	border: 2px solid #F4575C;
-	background-color: white;
+	background-color: #fff;
 	border-radius: 1.7rem;
 	color: #F4575C;
 	line-height: 3.4rem;
@@ -324,7 +251,7 @@ input[type=radio]{
 	background-color: $point-Col-01;
 	width: 100%;
 	height: 4rem;
-	color: white;
+	color: #fff;
 	border: none;
 	border-radius: 1.4rem;
 	font-size: 1.4rem;
@@ -334,7 +261,7 @@ input[type=radio]{
 	background-color: $point-Col-01;
 	width: 22rem;
 	height: 4rem;
-	color: white;
+	color: #fff;
 	border: none;
 	border-radius: 1.4rem;
 	font-size: 1.4rem;
@@ -344,7 +271,7 @@ input[type=radio]{
 	width: 10rem;
 	height: 3.4rem;
 	border: 2px solid #FA774E;
-	background-color: white;
+	background-color: #fff;
 	border-radius: 1.7rem;
 	color: #FA774E;
 	line-height: 3.4rem;
@@ -354,7 +281,7 @@ input[type=radio]{
 	width: 10rem;
 	height: 4rem;
 	border: 2px solid #FA774E;
-	background-color: white;
+	background-color: #fff;
 	border-radius: 2rem;
 	color: #FA774E;
 	line-height: 3.4rem;
@@ -368,7 +295,6 @@ input[type=radio]{
 	align-items: center;
 	text-align: left;
 	padding: 0.5rem 0 0.5rem 1rem;
-	height: 4rem;
 
 	.img {
 		width: 3rem;
@@ -383,89 +309,6 @@ input[type=radio]{
 		}
 	}
 }
-.loading-wrap {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	z-index: 999;
-	background-color: rgba(0, 0, 0, 0.6196078431);
-	display: none;
-	.container {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 60%;
-		height: 7rem;
-		background-color: white;
-		border-radius: 1.4rem;
-		padding: 1rem 0rem;
-
-		span {
-			padding-top: 1.5rem;
-		}
-	}
-}
-
-.bg-wrap {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	z-index: 999;
-	background-color: rgba(0, 0, 0, 0.6196078431);
-	display: none;
-
-	.container {
-		background-color: #ffffff;
-		width: 90%;
-		height: 47%;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		border-radius: 1rem;
-		overflow: hidden;
-		.title {
-			font-size: 1.6rem;
-			color: white;
-			margin-bottom: 60px;
-			height: 5rem;
-			line-height: 5.1rem;
-			border-bottom: 1px solid #D9E0E8;
-			text-align: left;
-			color: black;
-			padding: 0px 20px;
-		}
-		.scan-right-raw{
-			.btn-row {
-				padding: 0rem 2rem;
-				display: block;
-
-				button {
-					margin-bottom: 30px;
-				}
-			}
-		}
-		.btn-close {
-			position: absolute;
-			background: #ff8383;
-			border: none;
-			top: 10px;
-			right: 10px;
-			width: 30px;
-			height: 30px;
-			border-radius: 10px;
-			background-position: center;
-			background-size: 30px;
-			background-image: url(../img/btn_close.png);
-		} 
-	}
-}
-
 
 /*login, setting */
 
@@ -476,8 +319,8 @@ input[type=radio]{
 
 	.checkbox-wrap{		
 		text-align: right;
-		margin-top: 2rem;
-		margin-bottom: 2.3rem;
+		margin-top: 1.7rem;
+		margin-bottom: 2.2rem;
 		input[type="checkbox"]{
 			margin-right: 10px;
 		}
@@ -485,8 +328,13 @@ input[type=radio]{
 }
 
 .logo {
+	position: relative;
+	height: 120px;
 	img {
-		margin-top: 5.1rem;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%,-50%);
 	}
 
 	p {
@@ -496,16 +344,15 @@ input[type=radio]{
 }
 
 .setting {
-	margin-top: 3rem;
-	margin-bottom: 2rem;
+	margin-bottom: 2.0rem;
 	text-align: right;
 
 	button {
 		background-color: $point-Col-01;
-		padding: 0 1.4rem;
+		width: 5rem;
 		height: 3rem;
 		font-size: 1.3rem;
-		color: white;
+		color: #fff;
 		border-radius: 1.5rem;
 		border: none;
 		line-height: 1.4rem;
@@ -513,7 +360,7 @@ input[type=radio]{
 }
 
 .box{
-	background-color: white;
+	background-color: #fff;
 	border-radius: 2rem 2rem 2rem 0.6rem;
 	padding: 2rem 1rem 1.5rem 1.4rem;
 	height: 8rem;
@@ -555,11 +402,11 @@ input[type=radio]{
 		text-align: left;
 		padding-left: 30px;
 		position: relative;
-		input[type=text], input[type=password] {
+		input {
 			border: none;
 			width: 92%;
-			font-size: 1.5rem;
 			padding: 0;
+			font-size: 1.5rem;
 		}
 		&::before {
 			content: "";
@@ -609,7 +456,7 @@ input[type=radio]{
 	position: absolute;
 	background-image: url(../img/ic_close.png);
 	background-repeat: no-repeat;
-	top: 41%;
+	top: 50%;
     right: 0;
 	width: 1.3rem;
 	height: 1.3rem;
@@ -626,18 +473,20 @@ input[type=radio]{
 
 .setting-main{
 	width: 100%;
+	height: 100%;
 	padding: 0rem 2rem;
 
 	.box{
-		margin-bottom: 2rem;
-		.title{
-			margin-bottom: 0;
-		}
+		margin-bottom: 1rem;
+	}
+	.title{
+		margin-bottom: 0;
 	}
 
 	.setting-value{
-		input[type="text"]{
+		input[type="text"], select{
 			width: 100%;
+			height: 3.4rem;
 			font-size: 1.5rem;
 			border: 0;
 		}
@@ -647,20 +496,20 @@ input[type=radio]{
 .set-txt{
 	text-align: left;
 	color: #E91800;
-	margin: 3.4rem 0 1rem;
-	padding-left: 0.5rem;
+	margin: 2rem 0 2.1rem;
+	padding-left: 1.4rem;
 }
 
 .test-row{
 	text-align: right;
-	margin-bottom: 17.7rem;
+	margin: 2rem 0 2.7rem;
 }
 
 
 /*main-menu*/
 
 .menu{
-	padding: 3rem 3rem 0; 
+	padding: 4rem 4rem 0; 
 	height: calc(100% - 60px);
     overflow-y: auto;
 
@@ -671,27 +520,33 @@ input[type=radio]{
 	}
 
 	.list{
-		background-color: white;
-		border-radius: 2rem 2rem 2rem 0.6rem;
-		box-shadow: 0.2rem 0.2rem 0.4rem 0rem #d1cfcf;
-		width: 100%;
-		height: 7rem;
 		display: flex;
 		align-items: center;
+		width: 100%;
+		height: 7rem;
+		padding: 0 30px;		
 		margin-bottom: 2rem;
+		background-color: #fff;
+		border-radius: 2rem 2rem 2rem 0.6rem;
+		box-shadow: 0.2rem 0.2rem 0.4rem 0rem #d1cfcf;
+		
 		img{
-			margin-left: 1rem;
+			margin-right: 4.3rem;
+			
 		}
+
 		p{
-			font-size: 1.8rem;
+			font-size: 1.6rem;
 			text-align: center;
 			font-family: 'AppleSDGothicNeoEB';
 		}
-		.ic-menu-01{
-			margin-right: 1rem;
+		&:nth-child(4){
+			img{
+				margin-right: 3rem;
+			}
 		}
-		.ic-menu-02{
-			margin-right: 3.8rem;
+		&:last-child{
+			margin-bottom: 0;
 		}
 	}
 }
@@ -722,8 +577,7 @@ input[type=radio]{
 		.btn-row{
 			display: flex;
 			justify-content: space-between;
-			margin: 2rem 0 0.5rem;
-			padding: 0;
+			padding: 1.5rem 0;
 		}
 	}
 
@@ -736,7 +590,7 @@ input[type=radio]{
 	select{
 		border-radius: 1rem;
 		border: 0.1rem solid #CCCCCC;
-		background-color: white;
+		background-color: #fff;
 		height: 3.4rem;
 		font-size: 1.5rem;
 		padding: 0 1rem;
@@ -745,7 +599,7 @@ input[type=radio]{
 	}
 }
 .data-row{
-	margin-bottom: 1.6rem;
+	margin-bottom: 0.8rem;
 	&:last-child{
 		margin-bottom: 0;
 	}
@@ -755,8 +609,9 @@ input[type=radio]{
 	}
 }
 .row{
-	margin-bottom: 1.6rem;
+	margin-bottom: 1.4rem;
 }
+
 .title-row{
 	text-align: left;
 	margin-left: 1rem;
@@ -768,10 +623,10 @@ input[type=radio]{
 	top: -0.2rem;
 	font-size: 1rem;
 	line-height: 1.2;
-	color: white;
+	color: #fff;
 	background-color: $point-Col-01;
 	border-radius: 1rem;
-	padding: 0.3rem 0.3rem 0.1rem;	
+	padding: 0.3rem 0.6rem 0.1rem;	
 	margin-left: 1rem;
 }
 
@@ -821,7 +676,7 @@ input[type=radio]{
 		margin-top: 1rem;
 		font-size: 6rem;
 		font-family: 'AppleSDGothicNeoEB';
-		color: white;
+		color: #fff;
 	}
 	.p-scan{
 		color: #E7FF40;
@@ -836,7 +691,7 @@ input[type=radio]{
 }
 
 .table-container{
-	padding: 2rem 1rem 1.5rem;
+	padding: 1.5rem 1rem 1.5rem;
 	.btn-row{
 		display: flex;
 		justify-content: space-between;
@@ -881,22 +736,25 @@ input[type=radio]{
 	display: flex;
 	justify-content: space-between;
 
-	.right{
-		width: calc(100% - 17.5rem)
-	}
 	.left{
+		width: calc(100% - 12.1rem)
+	}
+	.right{
 		text-align: left;
 		input[type="text"]{
-			width: 14rem
+			text-align: right;
+			width: 9rem
 		}
-	}
-}
-.unit-wrap{
-	.unit{
-		vertical-align: bottom;
-		color: #666666;
-		font-size: 1.5rem;
-		line-height: 3.4rem;
+		.unit-wrap{
+
+			.unit{
+				vertical-align: bottom;
+				color: #666666;
+				font-size: 1.5rem;
+				line-height: 3.4rem;
+			}
+		}
+		
 	}
 }
 .radio-wrap{
@@ -943,99 +801,3 @@ input[type=radio]{
 		margin-bottom: 10px;
 	}
 }
-
-/*코드헬프*/
-.code-help-con{
-	position: fixed;
-    background-color: #D9E0E8;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 200;
-
-	.table{
-		height: 35.2rem;
-		margin-bottom: 2rem;
-	}
-
-	.btn-row{
-		padding: 0;
-		margin-bottom: 0;
-		button{
-			color: white;
-			border-radius: 1.4rem;
-			text-align: center;
-		}
-		.left{
-			height: 4rem;
-			line-height: 4rem;
-			background-color: #F4575C;
-			width: 12rem;
-		}
-		.right{
-			height: 4rem;
-			line-height: 4rem;
-			background-color: #153970;
-			width: 21rem;
-		}
-	}
-}
-
-.pagination-row {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 1rem;
-
-	.pagination {
-		font-size: 0;
-
-		.btn-prev {
-			width: 2rem;
-			height: 2rem;
-			background-image: url(../img/ic_left.png);
-			margin: 7px 14px 0 0;
-		}
-
-		.btn-next {
-			width: 2rem;
-			height: 2rem;
-			background-image: url(../img/ic_right.png);
-			margin: 7px 0 0 14px;
-		}
-
-		.mum-box {
-			display: inline-block;
-			line-height: 3.4rem;
-			font-size: 0;
-
-			span {
-				font-size: 1.4rem;
-			}
-
-			.current {
-				width: 5rem;
-				height: 3.4rem;
-				background-color: white;
-				border-radius: 1rem;
-				border: 0;
-				text-align: center;
-			}
-		}
-	}
-
-	.combo {
-		select {
-			border: none;
-			font-size: 1.4rem;
-			width: 12rem;
-			height: 3.4rem;
-			appearance: none;
-			background: url("../img/ic_dropdown.png") no-repeat 92% center;
-			background-color: white;
-			border-radius: 1rem;
-			padding: 0 1rem;
-		}
-	}
-}
-

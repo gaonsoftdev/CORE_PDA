@@ -53,10 +53,10 @@ GX._DATAS_ = {
 		}
 	},
 	pageUrls:{
-		'1':{link:'tradingStatementShipping.html', icon:'img/ic_mainmenu_01.png', groupTitle:'제품추적관리', subTitle:'Trading statement Shipping'},//명세입고처리_TDI
-		'2':{link:'inventoryInspection.html', icon:'img/ic_mainmenu_02.png', groupTitle:'제품추적관리', subTitle:'Inventory inspection'}, //재고실사등록_TDI
-		// '3':{link:'specificationShipmentProcessing.html', icon:'img/ic_mainmenu_03.png', groupTitle:'제품추적관리', subTitle:'명세출고처리'}, 
-		// '4':{link:'specificationReceiptProcessing.html', icon:'img/ic_mainmenu_04.png', groupTitle:'제품추적관리', subTitle:'명세입고처리'}, 
+		'1':{link:'tradingStatementShipping.html', icon:'img/ic_mainmenu_01.png', groupTitle:'제품추적관리', subTitle:'제품출고처리'},//명세입고처리_TDI
+		'2':{link:'inventoryInspection.html', icon:'img/ic_mainmenu_02.png', groupTitle:'제품추적관리', subTitle:'구매납품처리'}, //재고실사등록_TDI
+		'3':{link:'specificationShipmentProcessing.html', icon:'img/ic_mainmenu_03.png', groupTitle:'제품추적관리', subTitle:'이동입력처리'}, 
+		'4':{link:'specificationReceiptProcessing.html', icon:'img/ic_mainmenu_04.png', groupTitle:'제품추적관리', subTitle:'창고재고실사처리'}, 
 		// '5':{link:'otherShipmentProcessing.html', icon:'img/ic_mainmenu_05.png', groupTitle:'제품추적관리', subTitle:'기타출고처리'},
 		// '6':{link:'reworkProcessing.html', icon:'img/ic_mainmenu_06.png', groupTitle:'제품추적관리', subTitle:'재작업'}, 
 		// '7':{link:'packRework.html', icon:'img/ic_mainmenu_07.png', groupTitle:'제품추적관리', subTitle:'팩재작업'}, 

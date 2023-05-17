@@ -36,22 +36,22 @@
 	<div class="login-main" v-cloak id="app">
 
 		<div class="logo">
-			<img src="img/logo.png" alt="제주개발공사로고">
+			<img src="img/logo.png" alt="코아전기로고">
 		</div>
 
 		<div class="setting">
-			<button onclick="location.href='setting.html'">Setting</button>
+			<button onclick="location.href='setting.html'">설정</button>
 		</div>
 
 		<form>
 			<div class="box company">
 				<p class="title">
-					Company
+					회사명
 				</p>
 				<div class="select">
 					<select name="CompanySeq" v-model="companySeq" @change="selectedcompany();" validate="required:단위를 선택해주세요!">
 						<option :value="''">- 선택 -</option>
-						<option v-for="row in rows.IDCheck" :value="row.UCOmpanySeq">{{row.UCompanyName}}</option>
+						<option v-for="row in rows.IDCheck" :value="row.UCompanySeq">{{row.UCompanyName}}</option>
 					</select>
 				</div>
 			</div>
@@ -60,7 +60,7 @@
 
 			<div class="box id">
 				<p class="title">
-					ID
+					아이디
 				</p>
 				<div class="sub">
 					<input type="text" name="UserId" value="" v-model="userId" @change="checkId();" gx-init="addForm" gx-default="">
@@ -71,7 +71,7 @@
 
 			<div class="box password">
 				<p class="title">
-					Password
+					비밀번호
 				</p>
 				<div class="sub">
 					<input type="password" name="UserPwd" value="" v-model="userPwd" @keyup="login();">
@@ -80,10 +80,10 @@
 			</div>
 
 			<div class="checkbox-wrap">				
-				<label><input type="checkbox" id="id_chkBox" name="IsSaveId" v-model="isSaveIds" value="1" true-value="1" false-value="0" gx-default="0" @click="saveId();">Save ID</label>
+				<label><input type="checkbox" id="id_chkBox" name="IsSaveId" v-model="isSaveIds" value="1" true-value="1" false-value="0" gx-default="0" @click="saveId();">아이디 저장</label>
 			</div>
 
-			<button class="btn-style-01" @click="login();">LOGIN</button>
+			<button class="btn-style-01" @click="login();">로그인</button>
 
 		</form>
 
