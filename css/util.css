@@ -1,0 +1,163 @@
+.bg-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.6196078431);
+    display: none;
+}
+
+.bg-wrap .container {
+    background-color: #ffffff;
+    width: 90%;
+    height: 47%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.bg-wrap .container .title {
+    font-size: 1.6rem;
+    color: white;
+    margin-bottom: 60px;
+    height: 5rem;
+    line-height: 5.1rem;
+    border-bottom: 1px solid #D9E0E8;
+    text-align: left;
+    color: black;
+    padding: 0px 20px;
+}
+
+.bg-wrap .container .scan-right-raw .btn-row {
+    padding: 0rem 2rem;
+    display: block;
+}
+
+.bg-wrap .container .scan-right-raw .btn-row button {
+    margin-bottom: 30px;
+}
+
+.bg-wrap .container .btn-close {
+    position: absolute;
+    background: #ff8383;
+    border: none;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    background-position: center;
+    background-size: 30px;
+    background-image: url(../img/btn_close.png);
+}
+
+.bg-wrap .bg-btn-close {
+    position: absolute;
+    background: transparent;
+    border: none;
+    top: 0;
+    right: 0;
+}
+
+/*코드헬프*/
+.code-help-con {
+    position: fixed;
+    background-color: #D9E0E8;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 200;
+}
+
+.code-help-con .table {
+    height: 35.2rem;
+    margin-bottom: 2rem;
+}
+
+.code-help-con .btn-row {
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.code-help-con .btn-row button {
+    color: white;
+    border-radius: 1.4rem;
+    text-align: center;
+}
+
+.code-help-con .btn-row .left {
+    height: 4rem;
+    line-height: 4rem;
+    background-color: #F4575C;
+    width: 12rem;
+}
+
+.code-help-con .btn-row .right {
+    height: 4rem;
+    line-height: 4rem;
+    background-color: #153970;
+    width: 21rem;
+}
+
+.pagination-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.pagination-row .pagination {
+    font-size: 0;
+}
+
+.pagination-row .pagination .btn-prev {
+    width: 2rem;
+    height: 2rem;
+    background-image: url(../img/ic_left.png);
+    margin: 7px 14px 0 0;
+}
+
+.pagination-row .pagination .btn-next {
+    width: 2rem;
+    height: 2rem;
+    background-image: url(../img/ic_right.png);
+    margin: 7px 0 0 14px;
+}
+
+.pagination-row .pagination .mum-box {
+    display: inline-block;
+    line-height: 3.4rem;
+    font-size: 0;
+}
+
+.pagination-row .pagination .mum-box span {
+    font-size: 1.4rem;
+}
+
+.pagination-row .pagination .mum-box .current {
+    width: 5rem;
+    height: 3.4rem;
+    background-color: white;
+    border-radius: 1rem;
+    border: 0;
+    text-align: center;
+}
+
+.pagination-row .combo select {
+    border: none;
+    font-size: 1.4rem;
+    width: 12rem;
+    height: 3.4rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url("../img/ic_dropdown.png") no-repeat 92% center;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 0 1rem;
+}

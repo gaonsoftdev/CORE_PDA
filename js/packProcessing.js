@@ -14,8 +14,8 @@ var app = new Vue({
 			'MoveData':[]
 		},
 		queryForm:{
-			BaseDate:'',
-			BarCode:''
+			Date:'',
+			DVReqNo:''
 		},
 		QtyData:{
 			ItemName:'',
@@ -72,42 +72,37 @@ var app = new Vue({
 			]);
 		},
 		//바코드조회
-		InputPalletSel: function(){
+		DVReqNoSel: function(){
 			var vThis = this;
-			bk1: if(vThis.queryForm.BaseDate != '' && vThis.queryForm.BarCode != ''){
-				let params = {QryType:'BarCodeQuery',Gubun:'IDD_PAL_INF'};
-				let inputData = GX.deepCopy(GX.makeParamByForm(['BarCode', 'BaseDate'])); //참조없는 복사
-				inputData.PalletNo = inputData.BarCode;
-				inputData.BaseDate = inputData.BaseDate.replaceAll('-', '');
-				Object.assign(params, inputData);
-				// for(let i in vThis.rows.Query){
-				// 	if(vThis.rows.Query[i].InputPallet.replaceAll(' ','') == params.InputPallet.replaceAll(' ','')){
-				// 		alert('이미 스캔된 바코드입니다.');
-				// 		break bk1;
-				// 	}
-				// }
+			bk1: if(vThis.queryForm.DVReqNo != ''){
+				let params = {
+					UCompanySeq: GX.Cookie.get('UCompanySeq'),
+					DVReqNo: vThis.queryForm.DVReqNo,
+				};
+				this.init();
 				GX._METHODS_
-				.setMethodId('PalletInfo')
+				.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/DVReqQuery')
 				.ajax([params],[
 					function(data){
-						if (data != null) {
+						if (data != null && data.length >0) {
 							console.log(data);
-							vThis.rows.Query = vThis.rows.Query.concat(data);
-							for (i in vThis.rows.Query) {
-								vThis.rows.Query[i].SerialNo = Number(i)+1;
+							if(data[0].ErrCode == 99999){
+								alert(data[0].ErrMessage);	
+							} else {
+								vThis.rows.Query = vThis.rows.Query.concat(data);
+								for (i in vThis.rows.Query) {
+									vThis.rows.Query[i].SerialNo = Number(i)+1;
+								}
 							}
-							// data[0].Date = vThis.queryForm.Date;
-							// data[0].Qty = GX.NumberType.quantity(data[0].Qty);
 							// vThis.rows.Query.splice(0, 0, data[0]);
 							// vThis.initSelected();
-							
 							
 						}//data not null
 
 					}//function
 				]);
 			} else {
-				alert('등록일자를 입력해주세요.');
+				alert('출하의뢰 번호를 입력해주세요.');
 			}
 		},
 		save2: function(){
@@ -166,18 +161,8 @@ var app = new Vue({
 			else if(idx != -1) this.isCheckList.splice(idx, 1);
 		},
 		init: function(){
-			// let itemData = GX.deepCopy(this.itemData);
-			// for(let key in itemData){
-			// 	if(itemData.hasOwnProperty(key)){
-			// 		let obj = document.querySelector('[name="'+key+'"]');
-			// 		if(obj != null && obj.hasAttribute('gx-default')) itemData[key] = obj.getAttribute('gx-default');
-			// 	}
-			// }
-			// console.log(itemData)
-			// this.itemData = itemData;
-			// GX.initForm('addForm', ['gx-pre-value']);
 			this.rows.Query = [];
-			this.queryForm.BarCode = '';
+			this.queryForm.DVReqNo = '';
 			//this.rows.ReWorkData = [];
 			// this.queryForm = GX.getInitVueModelByFormDefault(this.queryForm);
 			// GX.initForm('addForm');	
@@ -322,7 +307,7 @@ var app = new Vue({
 			if(event.type == 'click') event.target.blur();
 		},
 		del: function(){
-			if(confirm('삭제되면 복구할 수 없습니다. 정말 삭제하시겠습니까?')){
+			if(true ||confirm('삭제되면 복구할 수 없습니다. 정말 삭제하시겠습니까?')){
 				var vThis = this;
 				let qryType = (document.querySelectorAll('[name="ReqSerl"]:checked').length > 0) ? 'SheetDelete' : 'MDelete';
 				let params = {QryType:qryType};
@@ -424,36 +409,6 @@ var app = new Vue({
 					//}
 				}
 
-				// if(isFocused) {
-				// 	if(event.target.hasAttribute('gx-scanner') && event.target.getAttribute('gx-scanner') == 'Y'){
-				// 		activeObjName = event.target.name;
-				// 		activeTabIdx = event.target.tabIndex;
-				// 		if(event.target.name == 'ReWorkPallet'){
-				// 			this.init();
-				// 			// document.querySelector('[name="BarCode"]').focus();
-				// 			isChange = 'ReWorkPallet';
-				// 		}else if(event.target.name == 'InputPallet'){
-				// 			isChange = 'InputPallet';
-				// 		}
-				// 	}
-				// }
-				// else {
-				// 	let scannerObj = document.querySelectorAll('[gx-scanner="Y"]');
-					
-				// 	if(scannerObj.length > 0){
-				// 		if(QRCodeData.includes('R')){
-				// 			this.init();
-				// 			activeObjName = scannerObj[0].name;
-				// 			activeTabIdx = scannerObj[0].tabIndex;	
-				// 			// document.querySelector('[name="BarCode"]').focus();
-				// 			isChange = 'ReWorkPallet';
-				// 		} else if(QRCodeData.includes('P')){
-				// 			activeObjName = scannerObj[1].name;
-				// 			activeTabIdx = scannerObj[1].tabIndex;
-				// 			isChange = 'InputPallet';
-				// 		}
-				// 	}
-				// }
 				if(activeObjName.length > 0){
 					
 					//if(this[activeObjName.capitalizeFirstLetter('L')] != null) this[activeObjName.capitalizeFirstLetter('L')] = QRCodeData;
@@ -465,8 +420,8 @@ var app = new Vue({
 					//GX.eventTrigger('[name="'+activeObjName+'"]', 'change');//1 또는 2개 있을 때
 
 					//GX.TabIndex.next(activeObjName);
-					document.querySelector('[name="BarCode"]').value = QRCodeData.replaceAll(' ','');
-					vThis.InputPalletSel();
+					document.querySelector('[name="DVReqNo"]').value = QRCodeData.replaceAll(' ','');
+					vThis.DVReqNoSel();
 				}
 				
 				event.preventDefault();
@@ -650,7 +605,7 @@ var app = new Vue({
 			let targetName = event.target.name;
 			let targetValue = event.target.value;
 			let vThis = this;
-			GX.doubleClickRun(event.target, function(){
+			// GX.doubleClickRun(event.target, function(){
 				vThis.focusCodeHelp(targetName);
 				vThis.setSearchCodeHelp(targetName, targetValue); //vThis.codeHelp[targetName] = targetValue;
 				vThis.searchCodeHelp(event.target.name, false);
@@ -660,7 +615,7 @@ var app = new Vue({
 				vThis.showCodeHelp(targetName);
 				vThis.anotherDisplayCodeHelp(targetName, 'none');
 
-			});
+			// });
 		},
 		closeCodeHelp: function(targetName){
 			let obj = document.querySelector('[code-help="'+targetName+'"]');
@@ -752,7 +707,7 @@ var app = new Vue({
 
 			var vThis = this;
 			GX._METHODS_
-			.setMethodId('Main')
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/WHCodeHelp')
 			.ajax([params], [function(data){
 				for(var di in data){
 					if(data.hasOwnProperty(di)){
@@ -893,7 +848,7 @@ var app = new Vue({
 		});//.set(2022, 1);
 
 		GX.NumberType.init(GX._DATAS_.convertRules);
-		document.querySelector('[name="BarCode"]').focus();
+		document.querySelector('[name="DVReqNo"]').focus();
 	},
 	created(){
 		if(!GX._METHODS_.isLogin()) location.replace('login.html');
@@ -902,21 +857,29 @@ var app = new Vue({
 			//GX.SpinnerBootstrap.init();
 			GX.SpinnerBootstrap.init('loading', 'loading-wrap', '<div class="container"><img src="img/loading.gif" alt=""><span>처리중입니다...</span></div>');
 			
-			this.queryForm.BaseDate = GX.formatDate(GX.nowDate().full, 'Y-M-D');
+			this.queryForm.Date = GX.formatDate(GX.nowDate().full, 'Y-M-D');
+
+			GX.VueGrid
+			.init()
+			.bodyRow('@click="selectCodeHelp(index);"')
+			.item('SerialNo').head('NO.', 'num text-c')
+			.item('WHName').head('storage', '')
+			.item('WHSeq').head('storage code', '')
+			.loadTemplate('#grid-Storage', 'rows.StorageListQuery');
 
 			GX.VueGrid
 			.init()
 			.bodyRow(':class="{\'check\':isChecked(index)}"')
 			.item('ReqSerl').head('<div class="chkBox"><input type="checkbox" @click="selectAll();" /></div>', '')
 			.body('<div class="chkBox"><input type="checkbox" name="ReqSerl" :value="row.ReqSerl" @click="selectedMark(index);" /></div>', '')
-			.item('SerialNo').head('번호', 'num')
-			.item('PackKey').head('Pack', '')
-			.item('PalletNo').head('PackPallet', '')
+			.item('SerialNo').head('번호', 'num text-c')
 			.item('ItemName').head('품명', '')
 			.item('ItemNo').head('품번', '')
-			.item('Qty').head('수량', '')
+			.item('Qty').head('수량', 'text-r')
 			.item('UnitName').head('단위', '')
+			.item('LotNo').head('LotNo', '')
 			.loadTemplate('#grid', 'rows.Query');
+			
 
 			if(this.params.QryType != null && this.params.QryType == 'Query') this.search(this.params);
 

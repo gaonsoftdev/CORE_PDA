@@ -20,6 +20,7 @@
 	<link rel="stylesheet" href="css/setup.css?v=20230414">
 	<link rel="stylesheet" href="css/style.css?v=20230414">
 	<link rel="stylesheet" href="css/date_picker.css?v=20230414">
+	<link rel="stylesheet" href="css/util.css?v=20230517">
 	<style>
 		/*
 		[v-cloak] .v-cloak--hidden{
@@ -38,7 +39,7 @@
 			<div class="img" onclick="location.replace('main.html');">
 				<img src="img/btn_back.png">
 			</div>
-			<span>팩정보등록[영림원][{{pdaPort}}]</span>
+			<span>제품출고처리</span>
 		</div>
 		<div class="data-container">
 			<div class="data-wrap">
@@ -46,16 +47,16 @@
 					<div class="title-row">
 						<span>등록일자</span>
 					</div>
-					<input type="text" name="BaseDate" v-model.trim="queryForm.BaseDate" value="" validate="required:이동 희망일를 입력해주세요!" gx-datepicker="queryForm.BaseDate" gx-default="">
+					<input type="text" name="Date" v-model.trim="queryForm.Date" value="" validate="required:이동 희망일를 입력해주세요!" gx-datepicker="queryForm.Date" gx-default="">
 				</div>
 			</div>
 			<div class="data-row">
 				<div class="title-row">
-					<span>Barcode</span><span class="scan" @click="runScanner('queryForm.BarCode');">스캔</span>
+					<span>출하의뢰번호</span><span class="scan" @click="runScanner('queryForm.DVReqNo');">스캔</span>
 				</div>
 				<div class="search-wrap">        
-					<input type="text" name="BarCode" v-model="queryForm.BarCode" gx-scanner="Y" gx-init="addForm" gx-default="">
-					<button class="btn-style-03" @click="InputPalletSel();">조회</button>
+					<input type="text" name="DVReqNo" v-model="queryForm.DVReqNo" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<button class="btn-style-03" name="Storage" @click="openCodeHelp();">조회</button>
 				</div>
 			</div>
 
@@ -75,13 +76,86 @@
 			<button class="btn-style-05" @click="save2();">등록하기</button>
 		</div>
 
+		<div class="bg-wrap" id="info-container" gx-layer="">
+			<div class="container">
+				<button class="btn-close" @click="closeInfo();"></button>
+				<p class="title">바코드 스캔 권한 설정 정보</p>
+				<div class="scan-right-raw">
+		
+					<div class="btn-row">
+						<button class="btn-jeju" @click="copyUnsafelyUrl();">카메라 허용 설정 주소 복사</button>
+						<button class="btn-jeju" @click="copyLocationOrigin();">현재 사이트 주소 복사</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		<div class="bg-wrap" id="scanner-container" gx-layer="">
 			<div id="qr-reader"></div>
-			<button class="bg-btn-close" @click="stopScanner();"> 
+			<button class="bg-btn-close" @click="stopScanner();">
 				<img src="img/btn_close.png" alt="">
 			</button>
 		</div>
+
+		<div class="bg-wrap" code-help="Storage" gx-layer="">
+			<div class="code-help-con">
+				<div class="top">
+					<span>Storage</span>
+				</div>
+		
+				<div class="data-container">
+					<div class="data-row">
+						<div class="title-row">
+							<span>Storage</span>
+						</div>
+						<div class="search-wrap">
+							<input type="text" name="Storage" v-model="codeHelp.Storage" @click="focusCodeHelp('Storage');"
+								@change="focusCodeHelp('Storage');">
+							<button class="btn-style-03" @click="searchCodeHelp('Storage');"> Search</button>
+						</div>
+					</div>
+				</div>
+				<div class="table-container">
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('Storage','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1"
+									@change="searchCodeHelp('Storage');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('Storage','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('Storage');">
+								<option value="50">50 each</option>
+								<option value="100">100 each</option>
+								<option value="150">150 each</option>
+								<option value="200">200 each</option>
+								<option value="250">250 each</option>
+								<option value="300">300 each</option>
+								<option value="350">350 each</option>
+								<option value="400">400 each</option>
+								<option value="450">450 each</option>
+								<option value="500">500 each</option>
+							</select>
+						</div>
+					</div>
+		
+					<div class="table-row">
+						<div id="grid-Storage" class="table">
+						</div>
+					</div>
+		
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('Storage');">Close</button>
+						<button class="right" @click="okCodeHelp('Storage');">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 	</div>
+
 </body>
 <script>
 //토글
