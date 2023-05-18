@@ -129,6 +129,10 @@ table{
 	}
 }
 
+table .click {
+    background-color: #DDF1FF;
+}
+
 .table{
 	overflow: auto;
 	border: 0.1rem solid $point-Col-01;
@@ -231,7 +235,8 @@ input[type=radio]{
 
 .btn-style-03{
 	width: 5rem;
-	line-height: 3.4rem;
+	height: 3.4rem;
+	line-height: 3.4rem;	
 	background-color: $point-Col-03;
 	border-radius: 1rem;
 	color: #fff;
@@ -251,23 +256,15 @@ input[type=radio]{
 	background-color: $point-Col-01;
 	width: 100%;
 	height: 4rem;
+	line-height: 4rem;
 	color: #fff;
 	border: none;
 	border-radius: 1.4rem;
-	font-size: 1.4rem;
+	font-size: 1.7rem;
 }
+
 
 .btn-style-06{
-	background-color: $point-Col-01;
-	width: 22rem;
-	height: 4rem;
-	color: #fff;
-	border: none;
-	border-radius: 1.4rem;
-	font-size: 1.4rem;
-}
-
-.btn-style-07{
 	width: 10rem;
 	height: 3.4rem;
 	border: 2px solid #FA774E;
@@ -277,15 +274,15 @@ input[type=radio]{
 	line-height: 3.4rem;
 }
 
-.btn-style-08{
-	width: 10rem;
-	height: 4rem;
-	border: 2px solid #FA774E;
-	background-color: #fff;
-	border-radius: 2rem;
-	color: #FA774E;
+.btn-style-07{
+	width: 5rem;
+	height: 3.4rem;
 	line-height: 3.4rem;
+	background-color: #6196FF;
+	border-radius: 1rem;
+	color: #fff;
 }
+
 
 .main{
 	height: calc(100% - 40px);
@@ -293,8 +290,9 @@ input[type=radio]{
 .top{
 	display: flex;
 	align-items: center;
-	text-align: left;
 	padding: 0.5rem 0 0.5rem 1rem;
+	font-size: 1.3rem;
+	text-align: left;
 
 	.img {
 		width: 3rem;
@@ -307,6 +305,9 @@ input[type=radio]{
 		&:active {
 			opacity: 0.8;
 		}
+	}
+	span{
+		line-height: 30px;
 	}
 }
 
@@ -570,17 +571,6 @@ input[type=radio]{
 	background-color: #F1F4F9;
 	padding: 2rem 1rem 1rem 1rem;
 
-	&.other{
-		padding: 2rem 1rem 1.5rem 1rem;
-		min-height: calc(100% - 4rem);
-
-		.btn-row{
-			display: flex;
-			justify-content: space-between;
-			padding: 1.5rem 0;
-		}
-	}
-
 	.code-help{
 		input[type=text]{
 			background-color: #F2F8FC;
@@ -599,11 +589,8 @@ input[type=radio]{
 	}
 }
 .data-row{
-	margin-bottom: 0.8rem;
-	&:last-child{
-		margin-bottom: 0;
-	}
-
+	margin-bottom: 1.4rem;
+	
 	.table{
 		height: 12.5rem;
 	}
@@ -645,50 +632,39 @@ input[type=radio]{
 	.data-row, .row{
 		width: 48.6%;
 	}
-}
-
-.toggle-row{
-	display: flex;
-	justify-content: space-between;
-	.data-row{
-		margin-bottom: 1.4rem;
-		&:first-child{
-			width: calc(100% - 9rem);
+	&:last-child{
+		.row{
+			margin-bottom: 0;
 		}
 	}
 }
 
-.product-info{
-	background-color: #2E5AC4;
-	padding: 1rem;
-	max-height: 12rem;
-	.product{
-		font-size: 2rem;
-		color: #2E5AC4;
-		background-color: #AFC6FF;
-		border-radius: 1rem;
+.data-con{
+	display: flex;
+	justify-content:space-between;
+
+
+	.num{
+		width: 37%;
 		text-align: left;
-		padding-left: 1rem;
-		line-height: 3rem;
+		input[type="text"]{
+			width: calc(100% - 3rem);
+			text-align: right;
+		}
+		.unit{
+			line-height: 3.6rem;
+			font-size: 1.5rem;
+		}
 	}
-	.total{
-		text-align: right;
-		margin-top: 1rem;
-		font-size: 6rem;
-		font-family: 'AppleSDGothicNeoEB';
-		color: #fff;
-	}
-	.p-scan{
-		color: #E7FF40;
-	}
-	.p-total{
-		color: #E7FF40;
-		text-align: right;
-		margin: 1rem 1rem 0 0;
-		font-size: 6rem;
-		font-family: 'AppleSDGothicNeoEB';
+	.date{
+		width: 56%;
+		input[type="text"]{
+			margin-right: 10px;
+		}
 	}
 }
+
+
 
 .table-container{
 	padding: 1.5rem 1rem 1.5rem;
@@ -699,23 +675,12 @@ input[type=radio]{
 		margin-bottom: 1.5rem;
 	}
 	.table{
-		height: 26.7rem;
-		margin-bottom: 5.5rem;
+		height: 29.5rem;
 		&.tb-h-01{
-			height: 29.3rem;
-			margin-bottom: 0;
+			height: 23.3rem; 
 		}
 		&.tb-h-02{
-			height: 41.6rem;
-			margin-bottom: 0;
-		}
-		&.tb-h-03{
-			height: 18.7rem;
-			margin-bottom: 0;
-		}
-		&.tb-h-04{
-			height: 34.2rem;
-			margin-bottom: 0;
+			height: 22.9rem;
 		}
 	}
 }
@@ -723,81 +688,105 @@ input[type=radio]{
 .btn-row{
 	padding: 0 1rem 1.5rem;
 }
-.fixed-btn-row{
+
+
+/*코드헬프*/
+.code-help-con{
 	position: fixed;
-	width: 100%;
-	bottom: 0;
-	padding: 1rem 1rem 1rem;
-	background-color: #E4E8EE;
-	z-index: 100;
+    background-color: #D9E0E8;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 200;
+	// display: none;
+
+	.table{
+		height: 36.3rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.btn-row{
+		padding: 0;
+		margin-bottom: 0;
+		button{
+			color: white;
+			border-radius: 1.4rem;
+			text-align: center;
+			font-size: 1.7rem;
+		}
+		.left{
+			height: 4rem;
+			line-height: 4rem;
+			background-color: #F4575C;
+			width: 10rem;
+		}
+		.right{
+			height: 4rem;
+			line-height: 4rem;
+			background-color: #153970;
+			width: 23rem;
+		}
+	}
 }
 
-.row-wrap{
+.pagination-row {
 	display: flex;
 	justify-content: space-between;
+	margin-bottom: 1rem;
 
-	.left{
-		width: calc(100% - 12.1rem)
-	}
-	.right{
-		text-align: left;
-		input[type="text"]{
-			text-align: right;
-			width: 9rem
-		}
-		.unit-wrap{
-
-			.unit{
-				vertical-align: bottom;
-				color: #666666;
-				font-size: 1.5rem;
-				line-height: 3.4rem;
-			}
-		}
-		
-	}
-}
-.radio-wrap{
-	margin-bottom: 2.1rem;
-	.title-row{
-		margin-bottom: 0.5rem;
-	}
-	.radio-row{
-		text-align: left;
-
-		label{
-			font-size: 1.5rem;
-			margin-right: 4rem;
-			&:last-child{
-				margin-right: 0;
-			}
-		}
-	}
-}
-
-.date-wrap{
-	display: flex;
-	justify-content: space-between;	
-	text-align: left;
-	.input-wrap{
-		width: calc(100% - 6rem);
+	.pagination {
 		font-size: 0;
-		input[type="text"]{
-			width: 46.5%;
-			text-align: center;
+
+		.btn-prev {
+			width: 2rem;
+			height: 2rem;
+			background-image: url(../img/ic_left.png);
+			margin: 7px 14px 0 0;
 		}
-		.hyphen{
-			margin: 0 7px;
-			line-height: 36px;
-			font-size: 1.5rem;
+
+		.btn-next {
+			width: 2rem;
+			height: 2rem;
+			background-image: url(../img/ic_right.png);
+			margin: 7px 0 0 14px;
+		}
+
+		.num-box {
+			display: inline-block;
+			line-height: 3.4rem;
+			font-size: 0;
+
+			span {
+				font-size: 1.5rem;
+			}
+
+			.current {
+				width: 5rem;
+				height: 3.4rem;
+				background-color: white;
+				border-radius: 1rem;
+				border: 1px solid #CCCCCC;
+				text-align: center;
+			}
+
+			.slash{
+				margin: 0 2rem 0 1rem;
+			}
 		}
 	}
-}
 
-/*팔레트 추적*/
-
-.pallet{
-	.data-row{
-		margin-bottom: 10px;
+	.combo {
+		select {
+			font-size: 1.5rem;
+			width: 12.7rem;
+			height: 3.4rem;
+			appearance: none;
+			background: url("../img/ic_dropdown.png") no-repeat 92% center;
+			background-color: white;
+			border-radius: 1rem;
+			padding: 0 1rem;
+			border: 1px solid #CCCCCC;
+		}
 	}
 }
