@@ -41,6 +41,13 @@
 			</div>
 			<span>이동입력처리</span>
 		</div>
+		<div class="date-container">
+			<div class="title-row">
+				<span>이동일자<span class="notice">(선택한 일자를 기준으로 저장됩니다.)</span></span>
+			</div>
+			<input type="text" name="Date" v-model.trim="queryForm.Date" value="" validate="required:이동 희망일를 입력해주세요!"
+				gx-datepicker="queryForm.Date" gx-default="">
+		</div>
 		<div class="data-container">
 			<div class="data-row">
 				<div class="title-row">
@@ -69,24 +76,18 @@
 					<button class="btn-style-03" name="ItemNo" @click="openCodeHelp();">조회</button>
 				</div>
 			</div>
-			<div class="data-con">
-				<div class="num">
-					<div class="title-row">
-						<span>수량</span>
-					</div>
-					<input type="text" name="Qty" v-model="queryForm.Qty" gx-scanner="Y" gx-init="addForm" gx-default="">
-					<span class="unit">EA</span>
+			<div class="data-row">
+				<div class="title-row">
+					<span>수량</span>
 				</div>
-				<div class="date">
-					<div class="title-row">
-						<span>이동일자</span>
+				<div class="search-wrap">
+					<div class="num">
+						<input type="text" name="Qty" v-model="queryForm.Qty" gx-scanner="Y" gx-init="addForm" gx-default="">
+						<span class="unit">EA</span>
 					</div>
-					<div class="search-wrap">
-						<input type="text" name="Date" v-model.trim="queryForm.Date" value="" validate="required:이동 희망일를 입력해주세요!"
-							gx-datepicker="queryForm.Date" gx-default="">
-						<button class="btn-style-07" @click="add2();">적용</button>
-					</div>
+					<button class="btn-style-07" @click="add2();">적용</button>
 				</div>
+
 			</div>
 		</div>
 		<div class="table-container">
@@ -110,8 +111,8 @@
 								<td>Lot No.</td>
 							</tr>
 						</thead>
-						<tbody v-for="(row, index) in rows.Query">
-							<tr :class="[row.isActive]">
+						<tbody>
+							<tr :class="[row.isActive]" v-for="(row, index) in rows.Query">
 								<td class="text-c">
 									<input type="checkbox" name="ReqSerl" @click="checkSel(index);"/>
 								</td>

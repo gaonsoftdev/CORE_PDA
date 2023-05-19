@@ -162,10 +162,12 @@ var app = new Vue({
 			if (ck) {
 				for (let i in objs) {
 					objs[i].checked = true;
+					this.rows.Query[i]['isActive'] = 'click';
 				}
 			} else {
 				for (let i in objs) {
 					objs[i].checked = false;
+					this.rows.Query[i]['isActive'] = '';
 				}
 			}
 		},

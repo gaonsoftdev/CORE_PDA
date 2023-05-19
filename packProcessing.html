@@ -64,11 +64,38 @@
 		<div class="table-container">
 			<div class="btn-row">
 				<button class="btn-style-04" @click="del();">선택삭제</button>
-				<button class="btn-style-07" @click="init();">초기화</button>
+				<button class="btn-style-06" @click="init();">초기화</button>
 			</div>
-			<div class="data-row">
-				<div class="table" id="grid">
-				</div>
+			<div class="table">
+				<table>
+					<thead>
+						<tr>
+							<td><input type="checkbox" name="allCk" @click="allCheck();"></td>
+							<td>번호</td>
+							<td>품명</td>
+							<td>품번</td>
+							<td>수량</td>
+							<td>단위</td>
+							<td>Location</td>
+							<td>Lot No.</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr :class="[row.isActive]" v-for="(row, index) in rows.Query">
+							<td class="text-c">
+								<input type="checkbox" name="ReqSerl" @click="checkSel(index);" />
+							</td>
+							<td class="text-c">{{row.SerialNo}}</td>
+							<td>{{row.ItemName}}</td>
+							<td>{{row.ItemNo}}</td>
+							<td class="text-r">{{row.Qty}}</td>
+							<td class="text-c">{{row.UnitName}}</td>
+							<td>{{row.WHName}}</td>
+							<td>{{row.LotNo}}</td>
+						</tr>
+						
+					</tbody>
+				</table>
 				
 			</div>
 		</div>
@@ -97,7 +124,7 @@
 			</button>
 		</div>
 
-		<div class="bg-wrap" code-help="InWHName" gx-layer="">
+		<div class="bg-wrap" code-help="DVReqNo" gx-layer="">
 			<div class="code-help-con">
 				<div class="top">
 					<span>출하의뢰번호</span>
@@ -108,25 +135,41 @@
 						<div class="title-row">
 							<span>검색어</span>
 						</div>
+						<div class="input-row">
+							<input type="text" name="DVReqNo" v-model="codeHelp.DVReqNo" @click="focusCodeHelp('DVReqNo');"
+								@change="focusCodeHelp('DVReqNo');">
+						</div>
+					</div>
+					<div class="data-row">
+						<div class="title-row">
+							<span>기간</span>
+						</div>
 						<div class="search-wrap">
-							<input type="text" name="InWHName" v-model="codeHelp.InWHName" @click="focusCodeHelp('InWHName');"
-								@change="focusCodeHelp('InWHName');">
-							<button class="btn-style-03" @click="searchCodeHelp('InWHName');"> 조회</button>
+							<div class="date-row">
+								<input type="text" name="Date1" v-model.trim="codeHelp.Date1" value="" validate="required:이동 희망일를 입력해주세요!"
+									gx-datepicker="codeHelp.Date1" gx-default="">
+								<span>-</span>
+								<input type="text" name="Date2" v-model.trim="codeHelp.Date2" value="" validate="required:이동 희망일를 입력해주세요!"
+									gx-datepicker="codeHelp.Date2" gx-default="">
+							</div>
+							<button class="btn-style-03" @click="searchCodeHelp('DVReqNo');"> 조회</button>
 						</div>
 					</div>
 				</div>
 				<div class="table-container">
 					<div class="pagination-row">
 						<div class="pagination">
-							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('InWHName','prev');"></a>
-							<div class="mum-box">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('DVReqNo','prev');"></a>
+							<div class="num-box">
 								<input class="current" type="text" name="PageCount" value="1"
-									@change="searchCodeHelp('InWHName');">
+									@change="searchCodeHelp('DVReqNo');">
+								<span class="slash">/</span>
+								<span>{{codeHelp.MaxRow}}</span>
 							</div>
-							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('InWHName','next');"></a>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('DVReqNo','next');"></a>
 						</div>
 						<div class="combo">
-							<select name="PageSize" @change="searchCodeHelp('InWHName');">
+							<select name="PageSize" @change="searchCodeHelp('DVReqNo');">
 								<option value="50">50개씩 보기</option>
 								<option value="100">100개씩 보기</option>
 								<option value="150">150개씩 보기</option>
@@ -142,21 +185,21 @@
 					</div>
 		
 					<div class="table-row">
-						<div class="table" id="grid-InWHName">
+						<div class="table" id="grid-DVReqNo">
 							<table>
 								<thead>
 									<tr>
 										<td>번호</td>
-										<td>창고명</td>
-										<td>창고코드</td>
+										<td>출하의뢰번호</td>
+										<td>출하의뢰일</td>
 									</tr>
 								</thead>
 								<tbody>
-									<tr name="ch-tr" v-for="(row, index) in rows.InWHNameListQuery"
+									<tr name="ch-tr" v-for="(row, index) in rows.DVReqNoListQuery"
 										@click="selectCodeHelp(index);">
 										<td class="text-c">{{row.SerialNo}}</td>
-										<td>{{row.WHName}}</td>
-										<td>{{row.WHSeq}}</td>
+										<td>{{row.DVReqNo}}</td>
+										<td>{{row.DVReqDate}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -164,8 +207,8 @@
 					</div>
 		
 					<div class="btn-row">
-						<button class="left" @click="closeCodeHelp('InWHName');">Close</button>
-						<button class="right" @click="okCodeHelp('InWHName');">OK</button>
+						<button class="left" @click="closeCodeHelp('DVReqNo');">Close</button>
+						<button class="right" @click="okCodeHelp('DVReqNo');">OK</button>
 					</div>
 				</div>
 			</div>

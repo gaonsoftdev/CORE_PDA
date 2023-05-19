@@ -17,7 +17,7 @@ button {
 .gx-datepicker {
   position: absolute;
   background: white;
-  z-index: 100;
+  z-index: 998;
   text-align: center;
   height: 400px;
   border-radius: 0.6rem;

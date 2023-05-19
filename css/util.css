@@ -4,7 +4,7 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    z-index: 999;
+    z-index: 997;
     background-color: rgba(0, 0, 0, 0.6196078431);
     display: none;
 }
@@ -76,8 +76,7 @@
 }
 
 .code-help-con .table {
-    height: 35.2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .code-help-con .btn-row {
@@ -89,20 +88,21 @@
     color: white;
     border-radius: 1.4rem;
     text-align: center;
+    font-size: 1.7rem;
 }
 
 .code-help-con .btn-row .left {
     height: 4rem;
     line-height: 4rem;
     background-color: #F4575C;
-    width: 12rem;
+    width: 10rem;
 }
 
 .code-help-con .btn-row .right {
     height: 4rem;
     line-height: 4rem;
     background-color: #153970;
-    width: 21rem;
+    width: 23rem;
 }
 
 .pagination-row {
@@ -129,29 +129,32 @@
     margin: 7px 0 0 14px;
 }
 
-.pagination-row .pagination .mum-box {
+.pagination-row .pagination .num-box {
     display: inline-block;
     line-height: 3.4rem;
     font-size: 0;
 }
 
-.pagination-row .pagination .mum-box span {
-    font-size: 1.4rem;
+.pagination-row .pagination .num-box span {
+    font-size: 1.5rem;
 }
 
-.pagination-row .pagination .mum-box .current {
+.pagination-row .pagination .num-box .current {
     width: 5rem;
     height: 3.4rem;
     background-color: white;
     border-radius: 1rem;
-    border: 0;
+    border: 1px solid #CCCCCC;
     text-align: center;
 }
 
+.pagination-row .pagination .num-box .slash {
+    margin: 0 2rem 0 1rem;
+}
+
 .pagination-row .combo select {
-    border: none;
-    font-size: 1.4rem;
-    width: 12rem;
+    font-size: 1.5rem;
+    width: 12.7rem;
     height: 3.4rem;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -160,8 +163,10 @@
     background-color: white;
     border-radius: 1rem;
     padding: 0 1rem;
+    border: 1px solid #CCCCCC;
 }
 
+/*로딩바*/
 .loading-wrap {
     position: fixed;
     top: 0;

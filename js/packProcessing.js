@@ -10,7 +10,7 @@ var app = new Vue({
 			'WHName': [],
 			'UnitName': [],
 			'Query': [],
-			'storageListQuery':[],
+			'DVReqNoListQuery':[],
 		},
 		queryForm:{
 			Date:'',
@@ -31,7 +31,10 @@ var app = new Vue({
 			UnitSeq:''
 		},
 		codeHelp:{
-			ItemNo:''
+			DVReqNo: '',
+			Date1: '',
+			Date2: '',
+			MaxRow: '1',
 		},
 		codeHelpRequest:{
 			ItemNo:['ItemNo'],
@@ -78,7 +81,12 @@ var app = new Vue({
 					UCompanySeq: GX.Cookie.get('UCompanySeq'),
 					DVReqNo: vThis.queryForm.DVReqNo,
 				};
-				this.init();
+				for (i in this.rows.Query){
+					if (this.rows.Query[i].DVReqNo == vThis.queryForm.DVReqNo) {
+						alert('동일한 출하의뢰번호가 존재합니다.');
+						return;
+					}
+				}
 				GX._METHODS_
 				.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/DVReqQuery')
 				.ajax([params],[
@@ -88,10 +96,12 @@ var app = new Vue({
 							if(data[0].ErrCode == 99999){
 								alert(data[0].ErrMessage);	
 							} else {
-								vThis.rows.Query = vThis.rows.Query.concat(data);
-								for (i in vThis.rows.Query) {
-									vThis.rows.Query[i].SerialNo = Number(i)+1;
-								}
+								data[0].SerialNo = Number(vThis.rows.Query.length) + 1;
+								data[0].DVReqNo = vThis.queryForm.DVReqNo;
+								data[0].isActive = '';
+								vThis.rows.Query.splice(0, 0, data[0]);
+								vThis.queryForm.DVReqNo = '';
+								document.querySelector('[name="DVReqNo"]').focus();
 							}
 							// vThis.rows.Query.splice(0, 0, data[0]);
 							// vThis.initSelected();
@@ -103,6 +113,30 @@ var app = new Vue({
 			} else {
 				alert('출하의뢰 번호를 입력해주세요.');
 			}
+		},
+		allCheck: function () { 
+			let ck = document.querySelector('[name="allCk"]').checked;
+			let objs = document.querySelectorAll('[name="ReqSerl"]');
+			if (ck) {
+				for (let i in this.rows.Query) {
+					objs[i].checked = true;
+					this.rows.Query[i]['isActive'] = 'click';
+				}
+			} else {
+				for (let i in this.rows.Query) {
+					objs[i].checked = false;
+					this.rows.Query[i]['isActive'] = '';
+				}
+			}
+		},
+		checkSel: function (idx) { 
+			let objs = document.querySelectorAll('[name="ReqSerl"]');
+			if (objs[idx].checked) {
+				this.rows.Query[idx]['isActive'] = 'click';
+			} else {
+				this.rows.Query[idx]['isActive'] = '';
+			}
+			
 		},
 		save2: function(){
 			var vThis = this;
@@ -176,6 +210,7 @@ var app = new Vue({
 		init: function(){
 			this.rows.Query = [];
 			this.queryForm.DVReqNo = '';
+			this.queryForm.Date = GX.formatDate(GX.nowDate().full, 'Y-M-D');
 			//this.rows.ReWorkData = [];
 			// this.queryForm = GX.getInitVueModelByFormDefault(this.queryForm);
 			// GX.initForm('addForm');	
@@ -632,9 +667,9 @@ var app = new Vue({
 		},
 		okCodeHelp: function (targetName) { 
 			let obj = document.querySelector('#grid-' + (targetName) + ' tbody tr.click');
-			this.queryForm[targetName] = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHName;
-			this.queryForm.StorageCode = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHSeq;
+			this.queryForm.DVReqNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].DVReqNo;
 			this.closeCodeHelp(targetName);
+			this.DVReqNoSel();
 		},
 		closeCodeHelp: function(targetName){
 			let obj = document.querySelector('[code-help="'+targetName+'"]');
@@ -662,6 +697,7 @@ var app = new Vue({
 					}	
 				}
 			}
+			document.querySelectorAll('[name="ch-tr"]').forEach(obj=>obj.classList.remove('click'));
 		},
 		setSearchCodeHelp: function(key, value){
 			const idx = (this.codeHelp[key] == null && this.codeHelpDependencyKey[key] != null) ? this.codeHelpDependencyKey[key] : key;
@@ -723,10 +759,13 @@ var app = new Vue({
 			if(pageCountObj != null && pageCountObj.value.match(/^[^0]\d*$/) == null) pageCountObj.value = 1;
 			params.PageCount = (pageCountObj != null) ? pageCountObj.value : 1;
 			params.PageSize = (pageSizeObj != null) ? pageSizeObj.value : 50;
+
 			params.UCompanySeq = GX.Cookie.get('UCompanySeq');
+			params.FrDate = this.codeHelp.Date1;
+			params.ToDate = this.codeHelp.Date2;
 			var vThis = this;
 			GX._METHODS_
-			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/WHCodeHelp')
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/DVReqCodeHelp')
 			.ajax([params], [function(data){
 				for(var di in data){
 					if(data.hasOwnProperty(di)){
@@ -747,7 +786,8 @@ var app = new Vue({
 					else if(data.length > 1) vThis.showCodeHelp(tempTargetName);
 				}
 
-				vThis.rows[tempTargetName.capitalizeFirstLetter('L') + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
+				vThis.rows[tempTargetName + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
+				if (vThis.rows[tempTargetName + 'ListQuery'].length > 0) vThis.codeHelp.MaxRow = vThis.rows[tempTargetName + 'ListQuery'][0].MaxRow;
 			}]);
 
 			if(event.type == 'click') event.target.blur();
@@ -759,13 +799,13 @@ var app = new Vue({
 				for(let i in obj){
 					if(obj.hasOwnProperty(i)) {
 						obj[i].selectedIndex = i;
-						obj[i].className = (i == String(index)) ? 'check' : '';
+						obj[i].className = (i == String(index)) ? 'click' : '';
 					}
 				}				
 			}
 			else {
 				event.target.selectedIndex = index;
-				event.target.className = 'check';
+				event.target.className = 'click';
 			}
 		},
 		selectedApplyCodeHelp: function(targetName){
@@ -875,8 +915,14 @@ var app = new Vue({
 			const vThis = this;
 			//GX.SpinnerBootstrap.init();
 			GX.SpinnerBootstrap.init('loading', 'loading-wrap', '<div class="container"><img src="img/loading.gif" alt=""><span>처리중입니다...</span></div>');
-			
 			this.queryForm.Date = GX.formatDate(GX.nowDate().full, 'Y-M-D');
+
+			var nDate1 = new Date();
+			nDate1.setDate(nDate1.getDate() - 7);
+			this.codeHelp.Date1 = GX.formatDate(GX.dateInfo(nDate1).full, 'Y-M-D');
+			var nDate2 = new Date();
+			nDate2.setDate(nDate2.getDate() + 7);
+			this.codeHelp.Date2 = GX.formatDate(GX.dateInfo(nDate2).full, 'Y-M-D');
 
 			// GX.VueGrid
 			// .init()
@@ -886,18 +932,18 @@ var app = new Vue({
 			// .item('WHSeq').head('창고코드', '')
 			// .loadTemplate('#grid-Storage', 'rows.storageListQuery');
 
-			GX.VueGrid
-			.init()
-			.bodyRow(':class="{\'check\':isChecked(index)}"')
-			.item('ReqSerl').head('<div class="chkBox"><input type="checkbox" @click="selectAll();" /></div>', '')
-			.body('<div class="chkBox"><input type="checkbox" name="ReqSerl" :value="row.ReqSerl" @click="selectedMark(index);" /></div>', '')
-			.item('SerialNo').head('번호', 'num text-c')
-			.item('ItemName').head('품명', '')
-			.item('ItemNo').head('품번', '')
-			.item('Qty').head('수량', 'text-r')
-			.item('UnitName').head('단위', '')
-			.item('LotNo').head('LotNo', '')
-			.loadTemplate('#grid', 'rows.Query');
+			// GX.VueGrid
+			// .init()
+			// .bodyRow(':class="{\'check\':isChecked(index)}"')
+			// .item('ReqSerl').head('<div class="chkBox"><input type="checkbox" @click="selectAll();" /></div>', '')
+			// .body('<div class="chkBox"><input type="checkbox" name="ReqSerl" :value="row.ReqSerl" @click="selectedMark(index);" /></div>', '')
+			// .item('SerialNo').head('번호', 'num text-c')
+			// .item('ItemName').head('품명', '')
+			// .item('ItemNo').head('품번', '')
+			// .item('Qty').head('수량', 'text-r')
+			// .item('UnitName').head('단위', '')
+			// .item('LotNo').head('LotNo', '')
+			// .loadTemplate('#grid', 'rows.Query');
 			
 
 			if(this.params.QryType != null && this.params.QryType == 'Query') this.search(this.params);
