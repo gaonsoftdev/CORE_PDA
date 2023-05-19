@@ -10,11 +10,11 @@ var app = new Vue({
 			'WHName': [],
 			'UnitName': [],
 			'Query': [],
-			'DVReqNoListQuery':[],
+			'PONoListQuery':[],
 		},
 		queryForm:{
 			Date:'',
-			DVReqNo:''
+			PONo:''
 		},
 		QtyData:{
 			ItemName:'',
@@ -31,7 +31,7 @@ var app = new Vue({
 			UnitSeq:''
 		},
 		codeHelp:{
-			DVReqNo: '',
+			PONo: '',
 			Date1: '',
 			Date2: '',
 			MaxRow: '1',
@@ -74,21 +74,21 @@ var app = new Vue({
 			]);
 		},
 		//바코드조회
-		DVReqNoSel: function(){
+		PONoSel: function(){
 			var vThis = this;
-			bk1: if(vThis.queryForm.DVReqNo != ''){
+			bk1: if(vThis.queryForm.PONo != ''){
 				let params = {
 					UCompanySeq: GX.Cookie.get('UCompanySeq'),
-					DVReqNo: vThis.queryForm.DVReqNo,
+					PONo: vThis.queryForm.PONo,
 				};
 				for (i in this.rows.Query){
-					if (this.rows.Query[i].DVReqNo == vThis.queryForm.DVReqNo) {
+					if (this.rows.Query[i].PONo == vThis.queryForm.PONo) {
 						alert('동일한 출하의뢰번호가 존재합니다.');
 						return;
 					}
 				}
 				GX._METHODS_
-				.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/DVReqQuery')
+				.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/PONoQuery')
 				.ajax([params],[
 					function(data){
 						if (data != null && data.length >0) {
@@ -97,11 +97,11 @@ var app = new Vue({
 								alert(data[0].ErrMessage);	
 							} else {
 								data[0].SerialNo = Number(vThis.rows.Query.length) + 1;
-								data[0].DVReqNo = vThis.queryForm.DVReqNo;
+								data[0].PONo = vThis.queryForm.PONo;
 								data[0].isActive = '';
 								vThis.rows.Query.splice(0, 0, data[0]);
-								vThis.queryForm.DVReqNo = '';
-								document.querySelector('[name="DVReqNo"]').focus();
+								vThis.queryForm.PONo = '';
+								document.querySelector('[name="PONo"]').focus();
 							}
 							// vThis.rows.Query.splice(0, 0, data[0]);
 							// vThis.initSelected();
@@ -148,23 +148,24 @@ var app = new Vue({
 			let params = [];
 			let param = {};
 			for(let i in ItemList){
-				if(ItemList.hasOwnProperty(i) && i > 0){
+				if(ItemList.hasOwnProperty(i)){
 					param = {};
 					param.UCompanySeq = GX.Cookie.get('UCompanySeq'),
-					param.DVReqSeq = ItemList[i].DVReqSeq;
-					param.DVReqSerl = ItemList[i].DVReqSerl;
+					param.POSeq = ItemList[i].POSeq;
+					param.POSerl = ItemList[i].POSerl;
 					param.ItemSeq = ItemList[i].ItemSeq;
 					param.UnitSeq = ItemList[i].UnitSeq;
-					param.LotNo = ItemList[i].LotNo;
 					param.Qty = ItemList[i].Qty;
 					param.WHSeq = ItemList[i].WHSeq;
 					param.EmpSeq = GX.Cookie.get('EmpSeq'),
+					param.LotNo = ItemList[i].LotNo;
+					param.LotNo = this.queryForm.Date.replaceAll('-','');
 					params.push(param);
 				}
 			}
 			
 			GX._METHODS_
-			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/InvoiceProc')
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/DelvProc')
 			.ajax(params, [function(data){
 				console.log(data);
 				if(data != null && data.length > 0){
@@ -209,7 +210,7 @@ var app = new Vue({
 		},
 		init: function(){
 			this.rows.Query = [];
-			this.queryForm.DVReqNo = '';
+			this.queryForm.PONo = '';
 			this.queryForm.Date = GX.formatDate(GX.nowDate().full, 'Y-M-D');
 			document.querySelector('[name="allCk"]').checked = false;
 			//this.rows.ReWorkData = [];
@@ -469,8 +470,8 @@ var app = new Vue({
 					//GX.eventTrigger('[name="'+activeObjName+'"]', 'change');//1 또는 2개 있을 때
 
 					//GX.TabIndex.next(activeObjName);
-					document.querySelector('[name="DVReqNo"]').value = QRCodeData.replaceAll(' ','');
-					vThis.DVReqNoSel();
+					document.querySelector('[name="PONo"]').value = QRCodeData.replaceAll(' ','');
+					vThis.PONoSel();
 				}
 				
 				event.preventDefault();
@@ -668,9 +669,9 @@ var app = new Vue({
 		},
 		okCodeHelp: function (targetName) { 
 			let obj = document.querySelector('#grid-' + (targetName) + ' tbody tr.click');
-			this.queryForm.DVReqNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].DVReqNo;
+			this.queryForm.PONo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].PONo;
 			this.closeCodeHelp(targetName);
-			this.DVReqNoSel();
+			this.PONoSel();
 		},
 		closeCodeHelp: function(targetName){
 			let obj = document.querySelector('[code-help="'+targetName+'"]');
@@ -769,10 +770,10 @@ var app = new Vue({
 			params.UCompanySeq = GX.Cookie.get('UCompanySeq');
 			params.FrDate = this.codeHelp.Date1;
 			params.ToDate = this.codeHelp.Date2;
-			params.DVReqNo = this.codeHelp.DVReqNo;
+			params.PONo = this.codeHelp.PONo;
 			var vThis = this;
 			GX._METHODS_
-			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/DVReqCodeHelp')
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/PONoCodeHelp')
 			.ajax([params], [function(data){
 				for(var di in data){
 					if(data.hasOwnProperty(di)){
@@ -914,7 +915,7 @@ var app = new Vue({
 		});//.set(2022, 1);
 
 		GX.NumberType.init(GX._DATAS_.convertRules);
-		document.querySelector('[name="DVReqNo"]').focus();
+		document.querySelector('[name="PONo"]').focus();
 	},
 	created(){
 		if(!GX._METHODS_.isLogin()) location.replace('login.html');

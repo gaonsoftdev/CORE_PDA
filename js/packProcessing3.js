@@ -39,7 +39,10 @@ var app = new Vue({
 			UnitSeq:''
 		},
 		codeHelp:{
-			ItemNo:''
+			ItemNo: '',
+			OutWHNameMaxRow: '',
+			InWHNameMaxRow: '',
+			ItemNoMaxRow: '',
 		},
 		codeHelpRequest:{
 			ItemNo:['ItemNo'],
@@ -805,6 +808,11 @@ var app = new Vue({
 			this.setSearchCodeHelp(event.target.name, event.target.value); //this.codeHelp[event.target.name] = event.target.value;
 			this.searchCodeHelp(event.target.name, true);
 		},
+		changeCodeHelp: function (targetName) { 
+			let pageCountObj = document.querySelector('[code-help="' + targetName + '"] [name="PageCount"]');
+			pageCountObj.value = 1;
+			this.searchCodeHelp(targetName);
+		},
 		searchCodeHelp: function(targetName, isOnePick){
 			let keys = this.codeHelpResponse[targetName];
 			let tempTargetName = (this.codeHelpDependencyKey[targetName] != null) ? this.codeHelpDependencyKey[targetName] : targetName;
@@ -867,6 +875,7 @@ var app = new Vue({
 				}
 
 				vThis.rows[tempTargetName + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
+				if (vThis.rows[tempTargetName + 'ListQuery'].length > 0) vThis.codeHelp[tempTargetName+'MaxRow'] = vThis.rows[tempTargetName + 'ListQuery'][0].MaxRow;
 			}]);
 
 			if(event.type == 'click') event.target.blur();

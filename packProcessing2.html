@@ -39,7 +39,7 @@
 			<div class="img" onclick="location.replace('main.html');">
 				<img src="img/btn_back.png">
 			</div>
-			<span>제품출고처리</span>
+			<span>구매납품처리</span>
 		</div>
 		<div class="data-container">
 			<div class="data-wrap">
@@ -52,11 +52,11 @@
 			</div>
 			<div class="data-row">
 				<div class="title-row">
-					<span>출하의뢰번호</span><span class="scan" @click="runScanner('queryForm.DVReqNo');">스캔</span>
+					<span>발주서번호</span><span class="scan" @click="runScanner('queryForm.PONo');">스캔</span>
 				</div>
 				<div class="search-wrap">        
-					<input type="text" name="DVReqNo" v-model="queryForm.DVReqNo" gx-scanner="Y" gx-init="addForm" gx-default="">
-					<button class="btn-style-03" name="DVReqNo" @click="openCodeHelp();">조회</button>
+					<input type="text" name="PONo" v-model="queryForm.PONo" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<button class="btn-style-03" name="PONo" @click="openCodeHelp();">조회</button>
 				</div>
 			</div>
 
@@ -124,10 +124,10 @@
 			</button>
 		</div>
 
-		<div class="bg-wrap" code-help="DVReqNo" gx-layer="">
+		<div class="bg-wrap" code-help="PONo" gx-layer="">
 			<div class="code-help-con">
 				<div class="top">
-					<span>출하의뢰번호</span>
+					<span>발주서번호</span>
 				</div>
 		
 				<div class="data-container">
@@ -136,8 +136,8 @@
 							<span>검색어</span>
 						</div>
 						<div class="input-row">
-							<input type="text" name="DVReqNo" v-model="codeHelp.DVReqNo" @click="focusCodeHelp('DVReqNo');"
-								@change="focusCodeHelp('DVReqNo');">
+							<input type="text" name="PONo" v-model="codeHelp.PONo" @click="focusCodeHelp('PONo');"
+								@change="focusCodeHelp('PONo');">
 						</div>
 					</div>
 					<div class="data-row">
@@ -152,24 +152,24 @@
 								<input type="text" name="Date2" v-model.trim="codeHelp.Date2" value="" validate="required:이동 희망일를 입력해주세요!"
 									gx-datepicker="codeHelp.Date2" gx-default="">
 							</div>
-							<button class="btn-style-03" @click="searchCodeHelp('DVReqNo');"> 조회</button>
+							<button class="btn-style-03" @click="searchCodeHelp('PONo');"> 조회</button>
 						</div>
 					</div>
 				</div>
 				<div class="table-container">
 					<div class="pagination-row">
 						<div class="pagination">
-							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('DVReqNo','prev');"></a>
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('PONo','prev');"></a>
 							<div class="num-box">
 								<input class="current" type="text" name="PageCount" value="1"
-									@change="searchCodeHelp('DVReqNo');">
+									@change="searchCodeHelp('PONo');">
 								<span class="slash">/</span>
 								<span>{{codeHelp.MaxRow}}</span>
 							</div>
-							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('DVReqNo','next');"></a>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('PONo','next');"></a>
 						</div>
 						<div class="combo">
-							<select name="PageSize" @change="changeCodeHelp('DVReqNo');">
+							<select name="PageSize" @change="changeCodeHelp('PONo');">
 								<option value="50">50개씩 보기</option>
 								<option value="100">100개씩 보기</option>
 								<option value="150">150개씩 보기</option>
@@ -185,21 +185,21 @@
 					</div>
 		
 					<div class="table-row">
-						<div class="table" id="grid-DVReqNo">
+						<div class="table" id="grid-PONo">
 							<table>
 								<thead>
 									<tr>
 										<td>번호</td>
-										<td>출하의뢰번호</td>
-										<td>출하의뢰일</td>
+										<td>발주번호</td>
+										<td>발주일</td>
 									</tr>
 								</thead>
 								<tbody>
-									<tr name="ch-tr" v-for="(row, index) in rows.DVReqNoListQuery"
+									<tr name="ch-tr" v-for="(row, index) in rows.PONoListQuery"
 										@click="selectCodeHelp(index);">
 										<td class="text-c">{{row.SerialNo}}</td>
-										<td>{{row.DVReqNo}}</td>
-										<td>{{row.DVReqDate}}</td>
+										<td>{{row.PONo}}</td>
+										<td>{{row.PODate}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -207,8 +207,8 @@
 					</div>
 		
 					<div class="btn-row">
-						<button class="left" @click="closeCodeHelp('DVReqNo');">Close</button>
-						<button class="right" @click="okCodeHelp('DVReqNo');">OK</button>
+						<button class="left" @click="closeCodeHelp('PONo');">Close</button>
+						<button class="right" @click="okCodeHelp('PONo');">OK</button>
 					</div>
 				</div>
 			</div>

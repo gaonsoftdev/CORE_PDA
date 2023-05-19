@@ -178,14 +178,16 @@
 					<div class="pagination-row">
 						<div class="pagination">
 							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('OutWHName','prev');"></a>
-							<div class="mum-box">
+							<div class="num-box">
 								<input class="current" type="text" name="PageCount" value="1"
 									@change="searchCodeHelp('OutWHName');">
+								<span class="slash">/</span>
+								<span>{{codeHelp.OutWHNameMaxRow}}</span>
 							</div>
 							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('OutWHName','next');"></a>
 						</div>
 						<div class="combo">
-							<select name="PageSize" @change="searchCodeHelp('OutWHName');">
+							<select name="PageSize" @change="changeCodeHelp('OutWHName');">
 								<option value="50">50개씩 보기</option>
 								<option value="100">100개씩 보기</option>
 								<option value="150">150개씩 보기</option>
@@ -251,14 +253,16 @@
 					<div class="pagination-row">
 						<div class="pagination">
 							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('InWHName','prev');"></a>
-							<div class="mum-box">
+							<div class="num-box">
 								<input class="current" type="text" name="PageCount" value="1"
 									@change="searchCodeHelp('InWHName');">
+								<span class="slash">/</span>
+								<span>{{codeHelp.InWHNameMaxRow}}</span>
 							</div>
 							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('InWHName','next');"></a>
 						</div>
 						<div class="combo">
-							<select name="PageSize" @change="searchCodeHelp('InWHName');">
+							<select name="PageSize" @change="changeCodeHelp('InWHName');">
 								<option value="50">50개씩 보기</option>
 								<option value="100">100개씩 보기</option>
 								<option value="150">150개씩 보기</option>
@@ -325,14 +329,16 @@
 					<div class="pagination-row">
 						<div class="pagination">
 							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('ItemNo','prev');"></a>
-							<div class="mum-box">
+							<div class="num-box">
 								<input class="current" type="text" name="PageCount" value="1"
 									@change="searchCodeHelp('ItemNo');">
+								<span class="slash">/</span>
+								<span>{{codeHelp.ItemNoMaxRow}}</span>
 							</div>
 							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('ItemNo','next');"></a>
 						</div>
 						<div class="combo">
-							<select name="PageSize" @change="searchCodeHelp('ItemNo');">
+							<select name="PageSize" @change="changeCodeHelp('ItemNo');">
 								<option value="50">50개씩 보기</option>
 								<option value="100">100개씩 보기</option>
 								<option value="150">150개씩 보기</option>
