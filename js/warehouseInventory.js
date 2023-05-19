@@ -41,7 +41,8 @@ var app = new Vue({
 		codeHelp:{
 			ItemNo : '',
 			Storage:'',
-			WHName : ''
+			WHName : '',
+			MaxRow : ''
 		},
 		codeHelpRequest:{
 			ItemNo:['ItemNo'],
@@ -133,6 +134,7 @@ var app = new Vue({
 								data[0]['RealQty'] = vThis.queryForm.RealQty;
 								data[0]['WHName'] = vThis.queryForm.WHName;
 								data[0]['WHSeq'] = vThis.queryForm.WHSeq;
+								data[0]['isActive'] = '';
 								vThis.rows.Query.splice(0,0,data[0]);
 								console.log(vThis.rows.Query);
 							// 	vThis.queryForm.WHName = data[0].WHName;
@@ -180,23 +182,24 @@ var app = new Vue({
 			let ck = document.querySelector('[name="allCk"]').checked;
 			let objs = document.querySelectorAll('[name="ReqSerl"]');
 			if (ck) {
-				for (let i in objs) {
+				for (let i = 0; i < objs.length; i++) {
 					objs[i].checked = true;
+					this.checkSel(i);
 				}
 			} else {
-				for (let i in objs) {
+				for (let i = 0; i < objs.length; i++) {
 					objs[i].checked = false;
+					this.checkSel(i);
 				}
 			}
 		},
 		checkSel: function (idx) { 
 			let objs = document.querySelectorAll('[name="ReqSerl"]');
 			if (objs[idx].checked) {
-				this.rows.Query[idx]['isActive'] = 'click';
+				this.rows.Query[idx].isActive = 'click';
 			} else {
-				this.rows.Query[idx]['isActive'] = '';
+				this.rows.Query[idx].isActive = '';
 			}
-			
 		},
 		del3: function () { 
 			let ItemList = GX.deepCopy(this.rows.Query);
@@ -255,6 +258,11 @@ var app = new Vue({
 					
 				}
 			}]);
+		},
+		pageSizeChange : function(str){
+			let pageCountObj = document.querySelector('[code-help="'+str+'"] [name="PageCount"]');
+			pageCountObj.value = 1;
+			this.searchCodeHelp(str);
 		},
 		//바코드조회
 		InputPalletSel: function(){
@@ -330,6 +338,7 @@ var app = new Vue({
 			this.queryForm.WHName = '';
 			this.queryForm.ItemNo = '';
 			this.queryForm.RealQty = '';
+			document.querySelector('[name="allCk"]').checked = false;
 			//this.rows.ReWorkData = [];
 			// this.queryForm = GX.getInitVueModelByFormDefault(this.queryForm);
 			// GX.initForm('addForm');	
@@ -956,6 +965,9 @@ var app = new Vue({
 				//vThis.rows[tempTargetName.capitalizeFirstLetter('L') + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
 				vThis.rows[tempTargetName + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
 			
+				if(vThis.rows[tempTargetName + 'ListQuery'].length != 0 ){
+					vThis.codeHelp.MaxRow = vThis.rows[tempTargetName + 'ListQuery'][0].MaxRow;
+				}
 				console.log(tempTargetName + 'ListQuery' , vThis.rows[tempTargetName + 'ListQuery'] ); 
 				
 				//console.log(tempTargetName.capitalizeFirstLetter('L') + 'ListQuery');

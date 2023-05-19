@@ -102,7 +102,7 @@
 						</tr>
 					</thead>
 					<tbody >
-						<tr :class="[row.isActive]" v-for="(row, index) in rows.Query ">
+						<tr v-bind:class="row.isActive" v-for="(row, index) in rows.Query ">
 							<td class="text-c">
 								<input type="checkbox" name="ReqSerl" @click="checkSel(index);"/>
 							</td>
@@ -165,24 +165,26 @@
 					<div class="pagination-row">
 						<div class="pagination">
 							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('Storage','prev');"></a>
-							<div class="mum-box">
+							<div class="num-box">
 								<input class="current" type="text" name="PageCount" value="1"
 									@change="searchCodeHelp('Storage');">
+								<span class="slash">/</span>
+								<span v-html="codeHelp.MaxRow"></span>
 							</div>
 							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('Storage','next');"></a>
 						</div>
 						<div class="combo">
-							<select name="PageSize" @change="searchCodeHelp('Storage');">
-								<option value="50">50 each</option>
-								<option value="100">100 each</option>
-								<option value="150">150 each</option>
-								<option value="200">200 each</option>
-								<option value="250">250 each</option>
-								<option value="300">300 each</option>
-								<option value="350">350 each</option>
-								<option value="400">400 each</option>
-								<option value="450">450 each</option>
-								<option value="500">500 each</option>
+							<select name="PageSize" @change="pageSizeChange('Storage');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
 							</select>
 						</div>
 					</div>
@@ -220,24 +222,26 @@
 					<div class="pagination-row">
 						<div class="pagination">
 							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('Item','prev');"></a>
-							<div class="mum-box">
+							<div class="num-box">
 								<input class="current" type="text" name="PageCount" value="1"
 									@change="searchCodeHelp('Item');">
+								<span class="slash">/</span>
+								<span v-html="codeHelp.MaxRow"></span>
 							</div>
 							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('Item','next');"></a>
 						</div>
 						<div class="combo">
-							<select name="PageSize" @change="searchCodeHelp('Item');">
-								<option value="50">50 each</option>
-								<option value="100">100 each</option>
-								<option value="150">150 each</option>
-								<option value="200">200 each</option>
-								<option value="250">250 each</option>
-								<option value="300">300 each</option>
-								<option value="350">350 each</option>
-								<option value="400">400 each</option>
-								<option value="450">450 each</option>
-								<option value="500">500 each</option>
+							<select name="PageSize" @change="pageSizeChange('Item');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
 							</select>
 						</div>
 					</div>
