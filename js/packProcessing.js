@@ -632,14 +632,8 @@ var app = new Vue({
 		},
 		okCodeHelp: function (targetName) { 
 			let obj = document.querySelector('#grid-' + (targetName) + ' tbody tr.click');
-			if (targetName == 'Storage') {
-				this.queryForm[targetName] = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHName;
-				this.queryForm.StorageCode = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHSeq;
-			} else {
-				this.queryForm.ProductName = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemName;
-				this.queryForm.DVReqNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].DVReqNo;
-				this.queryForm.ProductSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemSeq;
-			}
+			this.queryForm[targetName] = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHName;
+			this.queryForm.StorageCode = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHSeq;
 			this.closeCodeHelp(targetName);
 		},
 		closeCodeHelp: function(targetName){
@@ -884,13 +878,13 @@ var app = new Vue({
 			
 			this.queryForm.Date = GX.formatDate(GX.nowDate().full, 'Y-M-D');
 
-			GX.VueGrid
-			.init()
-			.bodyRow('@click="selectCodeHelp(index);"')
-			.item('SerialNo').head('NO.', 'num text-c')
-			.item('WHName').head('창고명', '')
-			.item('WHSeq').head('창고코드', '')
-			.loadTemplate('#grid-Storage', 'rows.storageListQuery');
+			// GX.VueGrid
+			// .init()
+			// .bodyRow('@click="selectCodeHelp(index);"')
+			// .item('SerialNo').head('NO.', 'num text-c')
+			// .item('WHName').head('창고명', '')
+			// .item('WHSeq').head('창고코드', '')
+			// .loadTemplate('#grid-Storage', 'rows.storageListQuery');
 
 			GX.VueGrid
 			.init()

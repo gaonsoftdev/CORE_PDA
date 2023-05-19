@@ -282,6 +282,9 @@ input[type=radio]:checked::before {
 .top span {
   line-height: 30px;
 }
+.top.border {
+  border-bottom: 1px solid #FFFFFF;
+}
 
 /*login, setting */
 .login-main {
@@ -565,6 +568,12 @@ input[type=radio]:checked::before {
 .search-wrap input[type=text] {
   width: calc(100% - 6rem);
 }
+.search-wrap .num {
+  width: calc(100% - 6rem);
+}
+.search-wrap .num input[type=text] {
+  width: 34%;
+}
 
 .data-wrap {
   display: flex;
@@ -577,27 +586,28 @@ input[type=radio]:checked::before {
   margin-bottom: 0;
 }
 
-.data-con {
-  display: flex;
-  justify-content: space-between;
-}
-.data-con .num {
-  width: 37%;
+.num {
   text-align: left;
 }
-.data-con .num input[type=text] {
-  width: calc(100% - 3rem);
+.num input[type=text] {
   text-align: right;
 }
-.data-con .num .unit {
+.num .unit {
+  margin-left: 4px;
   line-height: 3.6rem;
   font-size: 1.5rem;
 }
-.data-con .date {
-  width: 56%;
+
+.date-container {
+  padding: 10px 10px 15px;
+  text-align: left;
 }
-.data-con .date input[type=text] {
-  margin-right: 10px;
+.date-container input[type=text] {
+  width: 38.5%;
+}
+.date-container .notice {
+  margin-left: 6px;
+  color: #FF1C1C;
 }
 
 .input-row input[type=text] {

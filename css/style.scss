@@ -309,6 +309,9 @@ input[type=radio]{
 	span{
 		line-height: 30px;
 	}
+	&.border{
+		border-bottom: 1px solid #FFFFFF;
+	}
 }
 
 /*login, setting */
@@ -625,6 +628,12 @@ input[type=radio]{
 	justify-content: space-between;
 	input[type="text"]{
 		width: calc(100% - 6rem);
+	}
+	.num{
+		width: calc(100% - 6rem);
+		input[type="text"]{
+			width: 34%;
+		}
 	}	
 }
 
@@ -641,28 +650,27 @@ input[type=radio]{
 	}
 }
 
-.data-con{
-	display: flex;
-	justify-content:space-between;
 
-
-	.num{
-		width: 37%;
-		text-align: left;
-		input[type="text"]{
-			width: calc(100% - 3rem);
-			text-align: right;
-		}
-		.unit{
-			line-height: 3.6rem;
-			font-size: 1.5rem;
-		}
+.num{
+	text-align: left;
+	input[type="text"]{
+		text-align: right;
 	}
-	.date{
-		width: 56%;
-		input[type="text"]{
-			margin-right: 10px;
-		}
+	.unit{
+		margin-left: 4px;
+		line-height: 3.6rem;
+		font-size: 1.5rem;
+	}
+}
+.date-container{
+	padding: 10px 10px 15px;
+	text-align: left;
+	input[type="text"]{
+		width: 38.5%;
+	}
+	.notice{
+		margin-left: 6px;
+		color: #FF1C1C;
 	}
 }
 
