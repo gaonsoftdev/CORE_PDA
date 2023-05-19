@@ -41,6 +41,14 @@
 			</div>
 			<span>창고재고실사처리</span>
 		</div>
+		<div class="date-container">
+			<div class="title-row">
+				<span>실사일자<span class="notice">(선택한 일자를 기준으로 저장됩니다.)</span></span>
+			</div>
+			<div class="search-wrap">
+				<input type="text" name="StkDate" v-model.trim="queryForm.StkDate" value="" validate="required:실사일자를 입력해주세요!" gx-datepicker="queryForm.StkDate" gx-default="">
+			</div>
+		</div>
 		<div class="data-container">
 			<div class="data-row">
 				<div class="title-row">
@@ -57,38 +65,32 @@
 				</div>
 				<div class="search-wrap">        
 					<input type="text" name="ItemNo" v-model="queryForm.ItemNo" gx-scanner="Y" gx-init="addForm" gx-default="">
-					<button class="btn-style-03" name="ItemArea" @click="openCodeHelp();">조회</button>
+					<button class="btn-style-03" name="Item" @click="openCodeHelp();">조회</button>
 				</div>
 			</div>
-			<div class="data-con">
-				<div class="num">
-					<div class="title-row">
-						<span>수량</span>
-					</div>
-					<input type="text" name="RealQty" v-model="queryForm.RealQty">
-					<span class="unit">EA</span>
+			<div class="data-row">
+				<div class="title-row">
+					<span>수량</span>
 				</div>
-				<div class="date">
-					<div class="title-row">
-						<span>실사일자</span>
+				<div class="search-wrap">
+					<div class="num">
+						<input type="text" name="RealQty" v-model="queryForm.RealQty">
+						<span class="unit">EA</span>
 					</div>
-					<div class="search-wrap">
-						<input type="text" name="StkDate" v-model.trim="queryForm.StkDate" value="" validate="required:실사일자를 입력해주세요!" gx-datepicker="queryForm.StkDate" gx-default="">
-						<button class="btn-style-07">적용</button>
-					</div>
+					<button class="btn-style-07" @click="add2()">적용</button>
 				</div>
 			</div>
 		</div>
 		<div class="table-container">
 			<div class="btn-row">
-				<button class="btn-style-04">선택삭제</button>
-				<button class="btn-style-06">초기화</button>
+				<button class="btn-style-04" @click="del3();">선택삭제</button>
+				<button class="btn-style-06" @click="init();">초기화</button>
 			</div>
 			<div class="table tb-h-02">
 				<table>
 					<thead>
 						<tr>
-							<td><input type="checkbox"></td>
+							<td><input type="checkbox" name="allCk" @click="allCheck();" ></td>
 							<td>번호</td>
 							<td>품명</td>
 							<td>품번</td>
@@ -99,24 +101,26 @@
 							<td>Lot No.</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td class="text-c"><input type="checkbox"></td>
-							<td class="text-c">7</td>
-							<td>ProductName001</td>
-							<td>ProductNum001</td>
-							<td class="text-r">10</td>
-							<td class="text-r">10</td>
-							<td class="text-c">EA</td>
-							<td>Warehouse01</td>
-							<td>LOT0000001</td>
+					<tbody >
+						<tr :class="[row.isActive]" v-for="(row, index) in rows.Query ">
+							<td class="text-c">
+								<input type="checkbox" name="ReqSerl" @click="checkSel(index);"/>
+							</td>
+							<td class="text-c">{{row.SerialNo}}</td>
+							<td>{{row.ItemName}}</td>
+							<td>{{row.ItemNo}}</td>
+							<td class="text-r">{{row.MngQty}}</td>
+							<td class="text-r">{{row.RealQty}}</td>
+							<td class="text-c">{{row.UnitName}}</td>
+							<td>{{row.WHName}}</td>
+							<td>{{row.LotNo}}</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
 		<div class="btn-row">
-			<button class="btn-style-05">실사 처리하기(저장)</button>
+			<button class="btn-style-05" @click="save2();">처리하기</button>
 		</div>
 
 		<div class="bg-wrap" id="info-container" gx-layer="">
@@ -191,6 +195,77 @@
 					<div class="btn-row">
 						<button class="left" @click="closeCodeHelp('Storage');">Close</button>
 						<button class="right" @click="okCodeHelp('Storage');">OK</button>
+					</div>
+				</div>
+			</div>
+		</div> 
+		<div class="bg-wrap" code-help="Item" gx-layer="">
+			<div class="code-help-con">
+				<div class="top">
+					<span>품번선택</span>
+				</div>
+				<div class="data-container">
+					<div class="data-row">
+						<div class="title-row">
+							<span>품번</span>
+						</div>
+						<div class="search-wrap">        
+							<input type="text" name="Item" v-model="codeHelp.Item" @click="focusCodeHelp('Item');"
+								@change="focusCodeHelp('Item');">
+							<button class="btn-style-03" @click="searchCodeHelp('Item');"> 조회</button>
+						</div>
+					</div>
+				</div>
+				<div class="table-container">
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('Item','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1"
+									@change="searchCodeHelp('Item');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('Item','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('Item');">
+								<option value="50">50 each</option>
+								<option value="100">100 each</option>
+								<option value="150">150 each</option>
+								<option value="200">200 each</option>
+								<option value="250">250 each</option>
+								<option value="300">300 each</option>
+								<option value="350">350 each</option>
+								<option value="400">400 each</option>
+								<option value="450">450 each</option>
+								<option value="500">500 each</option>
+							</select>
+						</div>
+					</div>
+		
+					<div class="data-row">
+						<div id="grid-Item" class="table">
+							<!-- <table>
+								<thead>
+									<tr>
+										<td>번호</td>
+										<td>품명</td>
+										<td>품번</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr v-for="(row, index) in rows.ItemListQuery">
+										<td>{{row.SerialNo}}</td>
+										<td>{{row.ItemNo}}</td>
+										<td>{{row.ItemSeq}}</td>
+									</tr>
+								</tbody>
+							</table> -->
+						</div>
+					</div>
+		
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('Item');">Close</button>
+						<button class="right" @click="okCodeHelp('Item');">OK</button>
 					</div>
 				</div>
 			</div>

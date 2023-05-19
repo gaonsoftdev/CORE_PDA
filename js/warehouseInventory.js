@@ -10,7 +10,7 @@ var app = new Vue({
 			'WHName':[],
 			'UnitName':[],
 			'Query':[],
-			'itemNoListQuery':[],
+			'ItemListQuery':[],
 			'MoveData':[],
 			'StorageListQuery':[],
 		},
@@ -21,6 +21,7 @@ var app = new Vue({
 			RealQty:'',
 			StkDate:'',
 			ItemNo:'',
+			ItemSeq:'',
 			RealQty:'',
 		},
 		QtyData:{
@@ -108,6 +109,153 @@ var app = new Vue({
 				alert('창고명을 입력해주세요.');
 			}
 		},
+		add2: function () { 
+			var vThis = this;
+			if (this.queryForm.ItemNo.replaceAll(' ', '') == '') {
+				alert('품번을 입력해주세요.');
+			} else {
+				let params = {
+					UCompanySeq: GX.Cookie.get('UCompanySeq'),
+					WHSeq : vThis.queryForm.WHSeq,
+					EmpSeq : GX.Cookie.get('EmpSeq'),
+					ItemNo: vThis.queryForm.ItemNo,
+				};
+				GX._METHODS_
+				.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/ItemStockQuery')
+				.ajax([params],[
+					function(data){
+						if (data != null && data.length >0) {
+							console.log(data);
+							if(data[0].ErrCode == 99999){
+								alert(data[0].ErrMessage);	
+							} else {
+								data[0]['SerialNo'] = vThis.rows.Query.length + 1
+								data[0]['RealQty'] = vThis.queryForm.RealQty;
+								data[0]['WHName'] = vThis.queryForm.WHName;
+								data[0]['WHSeq'] = vThis.queryForm.WHSeq;
+								vThis.rows.Query.splice(0,0,data[0]);
+								console.log(vThis.rows.Query);
+							// 	vThis.queryForm.WHName = data[0].WHName;
+							// 	vThis.queryForm.WHSeq = data[0].WHSeq;
+							// 	document.querySelector('[name="ItemNo"]').focus();
+							}
+							vThis.queryForm.ItemNo = '';
+							vThis.queryForm.RealQty = '';
+						}//data not null
+					}//function
+				]);
+				// for (i in this.rows.Query){
+				// 	if (this.rows.Query[i].WHSeq == this.queryForm.WHSeq && this.rows.Query[i].ItemNo == this.queryForm.ItemNo ) {
+				// 		alert('중복된 데이터가 존재합니다.');	
+				// 		return;
+				// 	}
+
+				// }
+				// let param = {
+				// 	SerialNo: this.rows.Query.length + 1,
+				// 	ItemName: this.itemMap.ItemName,
+				// 	ItemNo: this.itemMap.ItemNo,
+				// 	ItemSeq: this.itemMap.ItemSeq,
+				// 	UnitSeq: this.itemMap.UnitSeq,
+				// 	Qty: this.queryForm.Qty,
+				// 	UnitName: this.itemMap.UnitName,
+				// 	OutWHName: this.queryForm.OutWHName,
+				// 	OutWHSeq: this.queryForm.OutWHSeq,
+				// 	InWHName: this.queryForm.InWHName,
+				// 	InWHSeq: this.queryForm.InWHSeq,
+				// 	LotNo: this.itemMap.LotNo,
+				// 	Date: this.queryForm.Date.replaceAll('-',''),
+				// };
+
+				// this.rows.Query.splice(0,0,param);
+				// this.queryForm.ItemNo = '';
+				// this.queryForm.RealQty = '';
+				// this.itemMap = {};
+			}
+			
+			document.querySelector('[name="ItemNo"]').focus();
+
+		},
+		allCheck: function () { 
+			let ck = document.querySelector('[name="allCk"]').checked;
+			let objs = document.querySelectorAll('[name="ReqSerl"]');
+			if (ck) {
+				for (let i in objs) {
+					objs[i].checked = true;
+				}
+			} else {
+				for (let i in objs) {
+					objs[i].checked = false;
+				}
+			}
+		},
+		checkSel: function (idx) { 
+			let objs = document.querySelectorAll('[name="ReqSerl"]');
+			if (objs[idx].checked) {
+				this.rows.Query[idx]['isActive'] = 'click';
+			} else {
+				this.rows.Query[idx]['isActive'] = '';
+			}
+			
+		},
+		del3: function () { 
+			let ItemList = GX.deepCopy(this.rows.Query);
+			let params = [];
+			let objs = document.querySelectorAll('[name="ReqSerl"]');
+			for (let ci in objs) {
+				if (objs.hasOwnProperty(ci)) {
+					if (objs[ci].checked) { 
+
+					} else {
+						params.splice(0,0,ItemList[ci]);
+					}
+				}
+			}
+			document.querySelector('[name="allCk"]').checked = false;
+			this.rows.Query = params;
+			console.log('this.rows.Query' , this.rows.Query);
+		},
+		save2: function(){
+			var vThis = this;
+			if(vThis.rows.Query.length == 0){
+				alert('조회된 정보가 없습니다.');
+				return false;
+			}
+			
+			let ItemList = GX.deepCopy(this.rows.Query);
+			let params = [];
+			let param = {};
+			for(let i in ItemList){
+				if(ItemList.hasOwnProperty(i)){
+					param = {};
+					param.UCompanySeq = GX.Cookie.get('UCompanySeq'),
+					param.WHSeq = ItemList[i].WHSeq;
+					param.StkDate = this.queryForm.StkDate = GX.formatDate(vThis.queryForm.StkDate, 'YMD');
+					param.ItemSeq = ItemList[i].ItemSeq;
+					param.UnitSeq = ItemList[i].UnitSeq;
+					param.LotNo = ItemList[i].LotNo;
+					param.MngQty = ItemList[i].MngQty;
+					param.RealQty = ItemList[i].RealQty;
+					param.EmpSeq = GX.Cookie.get('EmpSeq'),
+					params.push(param);
+				}
+			}
+			console.log(params);
+			GX._METHODS_
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/RealStockProc')
+			.ajax(params, [function(data){
+				console.log(data);
+				if(data != null && data.length > 0){
+					if (data[0].ErrCode == 99999) {
+						alert(data[0].ErrMessage);	
+					} else {
+						alert('등록되었습니다.');
+						vThis.init();
+					}
+					
+				}
+			}]);
+		},
 		//바코드조회
 		InputPalletSel: function(){
 			var vThis = this;
@@ -147,32 +295,6 @@ var app = new Vue({
 				alert('등록일자를 입력해주세요.');
 			}
 		},
-		save2: function(){
-			var vThis = this;
-			if(vThis.rows.Query.length == 0){
-				alert('조회된 정보가 없습니다.');
-				return false;
-			}
-			let params = { QryType: 'NewSave', Gubun: 'IDD_PAL_INF', SendType: '1', BaseDate:vThis.queryForm.BaseDate.replaceAll('-', ''), };
-			let newData = [];
-			let queryData = GX.deepCopy(this.rows.Query);
-			for(let qi in queryData){
-				if(queryData.hasOwnProperty(qi)){
-					newData.push(Object.assign(queryData[qi], params));
-				}
-			}
-			// inputData.BaseDate = inputData.BaseDate.replaceAll('-','');
-			// inputData.PalletNo = inputData.BarCode;
-			GX._METHODS_
-			.setMethodId('PalletInfo')
-			.ajax(newData, [function(data){
-				console.log(data);
-				// if(data.length>0){
-				// 	vThis.queryForm.BarCode = '';
-				// }
-			}]);
-			this.init();
-		},
 		selectAll: function(){
 			//console.log("selectAll");
 			let obj = document.querySelectorAll('[name="ReqSerl"]');
@@ -203,18 +325,11 @@ var app = new Vue({
 			else if(idx != -1) this.isCheckList.splice(idx, 1);
 		},
 		init: function(){
-			// let itemData = GX.deepCopy(this.itemData);
-			// for(let key in itemData){
-			// 	if(itemData.hasOwnProperty(key)){
-			// 		let obj = document.querySelector('[name="'+key+'"]');
-			// 		if(obj != null && obj.hasAttribute('gx-default')) itemData[key] = obj.getAttribute('gx-default');
-			// 	}
-			// }
-			// console.log(itemData)
-			// this.itemData = itemData;
-			// GX.initForm('addForm', ['gx-pre-value']);
-			// this.rows.Query = [];
+			this.rows.Query = [];
+			this.queryForm.StkDate = GX.formatDate(GX.nowDate().full, 'Y-M-D');
 			this.queryForm.WHName = '';
+			this.queryForm.ItemNo = '';
+			this.queryForm.RealQty = '';
 			//this.rows.ReWorkData = [];
 			// this.queryForm = GX.getInitVueModelByFormDefault(this.queryForm);
 			// GX.initForm('addForm');	
@@ -698,14 +813,15 @@ var app = new Vue({
 				this.queryForm.WHSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHSeq;
 				console.log('Storage');
 			} else {
-				this.queryForm.ProductName = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemName;
-				this.queryForm.DVReqNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].DVReqNo;
-				this.queryForm.ProductSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemSeq;
+				this.queryForm.ItemNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemNo;
+				// this.queryForm.DVReqNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].DVReqNo;
+				this.queryForm.ItemSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemSeq;
 			}
 			this.closeCodeHelp(targetName);
 		},
 		closeCodeHelp: function(targetName){
 			console.log('closeCodeHelp');
+			let vThis = this;
 			let obj = document.querySelector('[code-help="'+targetName+'"]');
 			if(obj != null) {
 				if(GX.isShowElement(obj)){	
@@ -734,6 +850,9 @@ var app = new Vue({
 			if (targetName == 'Storage') {
 				document.querySelector('[name="ItemNo"]').focus();
 			}else{
+				// if(vThis.queryForm.ItemNo == '' ){
+
+				// }
 				document.querySelector('[name="RealQty"]').focus();
 			}
 		},
@@ -798,15 +917,23 @@ var app = new Vue({
 			if(pageCountObj != null && pageCountObj.value.match(/^[^0]\d*$/) == null) pageCountObj.value = 1;
 			params.PageCount = (pageCountObj != null) ? pageCountObj.value : 1;
 			params.PageSize = (pageSizeObj != null) ? pageSizeObj.value : 50;
-			params.WHName = vThis.codeHelp.Storage; 
 			params.UCompanySeq = GX.Cookie.get('UCompanySeq');
+			
+			let url = '';
+			if(targetName == 'Storage'){
+				params.WHName = vThis.codeHelp.Storage; 
+				url = 'Genuine.coreModuleName.BisSIAPIIntegration_core/WHCodeHelp';
+			}else{
+				params.ItemNo = vThis.codeHelp.Item; 
+				url = 'Genuine.coreModuleName.BisSIAPIIntegration_core/ItemNoCodeHelp';
+			}
 
 			console.log(params);
 			
 			GX._METHODS_
-			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/WHCodeHelp')
+			.setMethodId(url)
 			.ajax([params], [function(data){
-				console.log('WHCodeHelp' , data);
+				console.log('CodeHelp' , data);
 				for(var di in data){
 					if(data.hasOwnProperty(di)){
 						data[di].SerialNo = Number(di)+1 + (params.PageSize * (params.PageCount - 1));
@@ -828,6 +955,9 @@ var app = new Vue({
 
 				//vThis.rows[tempTargetName.capitalizeFirstLetter('L') + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
 				vThis.rows[tempTargetName + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
+			
+				console.log(tempTargetName + 'ListQuery' , vThis.rows[tempTargetName + 'ListQuery'] ); 
+				
 				//console.log(tempTargetName.capitalizeFirstLetter('L') + 'ListQuery');
 			}]);
 
@@ -966,6 +1096,14 @@ var app = new Vue({
 			.item('WHName').head('storage', '')
 			.item('WHSeq').head('storage code', '')
 			.loadTemplate('#grid-Storage', 'rows.StorageListQuery');
+
+			GX.VueGrid
+			.init()
+			.bodyRow('@click="selectCodeHelp(index);"')
+			.item('SerialNo').head('NO.', 'num text-c')
+			.item('ItemNo').head('품명', '')
+			.item('ItemSeq').head('품목코드', '')
+			.loadTemplate('#grid-Item', 'rows.ItemListQuery');
 
 
 			// GX.VueGrid
