@@ -155,63 +155,226 @@
 			</button>
 		</div>
 
-		<div class="bg-wrap" code-help="DVReqNo" gx-layer="">
+		<div class="bg-wrap" code-help="OutWHName" gx-layer="">
 			<div class="code-help-con">
 				<div class="top">
-					<span>DVReqNo</span>
+					<span>창고</span>
 				</div>
 		
 				<div class="data-container">
 					<div class="data-row">
 						<div class="title-row">
-							<span>창고</span>
+							<span>검색어</span>
 						</div>
 						<div class="search-wrap">
-							<input type="text" name="Storage" v-model="codeHelp.Storage" @click="focusCodeHelp('Storage');"
-								@change="focusCodeHelp('Storage');">
-							<button class="btn-style-03" @click="searchCodeHelp('Storage');"> 조회</button>
+							<input type="text" name="OutWHName" v-model="codeHelp.OutWHName" @click="focusCodeHelp('OutWHName');"
+								@change="focusCodeHelp('OutWHName');">
+							<button class="btn-style-03" @click="searchCodeHelp('OutWHName');"> 조회</button>
 						</div>
 					</div>
 				</div>
 				<div class="table-container">
 					<div class="pagination-row">
 						<div class="pagination">
-							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('Storage','prev');"></a>
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('OutWHName','prev');"></a>
 							<div class="mum-box">
 								<input class="current" type="text" name="PageCount" value="1"
-									@change="searchCodeHelp('Storage');">
+									@change="searchCodeHelp('OutWHName');">
 							</div>
-							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('Storage','next');"></a>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('OutWHName','next');"></a>
 						</div>
 						<div class="combo">
-							<select name="PageSize" @change="searchCodeHelp('Storage');">
-								<option value="50">50 each</option>
-								<option value="100">100 each</option>
-								<option value="150">150 each</option>
-								<option value="200">200 each</option>
-								<option value="250">250 each</option>
-								<option value="300">300 each</option>
-								<option value="350">350 each</option>
-								<option value="400">400 each</option>
-								<option value="450">450 each</option>
-								<option value="500">500 each</option>
+							<select name="PageSize" @change="searchCodeHelp('OutWHName');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
 							</select>
 						</div>
 					</div>
 		
-					<div class="data-row">
-						<div id="grid-Storage" class="table">
+					<div class="table-row">
+						<div class="table" id="grid-OutWHName">
+							<table>
+								<thead>
+									<tr>
+										<td>번호</td>
+										<td>창고명</td>
+										<td>창고코드</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr name="ch-tr" v-for="(row, index) in rows.OutWHNameListQuery" @click="selectCodeHelp(index);">
+										<td class="text-c">{{row.SerialNo}}</td>
+										<td>{{row.WHName}}</td>
+										<td>{{row.WHSeq}}</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
 		
 					<div class="btn-row">
-						<button class="left" @click="closeCodeHelp('Storage');">Close</button>
-						<button class="right" @click="okCodeHelp('DVReqNo');">OK</button>
+						<button class="left" @click="closeCodeHelp('OutWHName');">Close</button>
+						<button class="right" @click="okCodeHelp('OutWHName');">OK</button>
 					</div>
 				</div>
 			</div>
 		</div>
 
+		<div class="bg-wrap" code-help="InWHName" gx-layer="">
+			<div class="code-help-con">
+				<div class="top">
+					<span>창고</span>
+				</div>
+		
+				<div class="data-container">
+					<div class="data-row">
+						<div class="title-row">
+							<span>검색어</span>
+						</div>
+						<div class="search-wrap">
+							<input type="text" name="InWHName" v-model="codeHelp.InWHName"
+								@click="focusCodeHelp('InWHName');" @change="focusCodeHelp('InWHName');">
+							<button class="btn-style-03" @click="searchCodeHelp('InWHName');"> 조회</button>
+						</div>
+					</div>
+				</div>
+				<div class="table-container">
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('InWHName','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1"
+									@change="searchCodeHelp('InWHName');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('InWHName','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('InWHName');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+		
+					<div class="table-row">
+						<div class="table" id="grid-InWHName">
+							<table>
+								<thead>
+									<tr>
+										<td>번호</td>
+										<td>창고명</td>
+										<td>창고코드</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr name="ch-tr" v-for="(row, index) in rows.InWHNameListQuery"
+										@click="selectCodeHelp(index);">
+										<td class="text-c">{{row.SerialNo}}</td>
+										<td>{{row.WHName}}</td>
+										<td>{{row.WHSeq}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+		
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('InWHName');">Close</button>
+						<button class="right" @click="okCodeHelp('InWHName');">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-wrap" code-help="ItemNo" gx-layer="">
+			<div class="code-help-con">
+				<div class="top">
+					<span>창고</span>
+				</div>
+		
+				<div class="data-container">
+					<div class="data-row">
+						<div class="title-row">
+							<span>검색어</span>
+						</div>
+						<div class="search-wrap">
+							<input type="text" name="ItemNo" v-model="codeHelp.ItemNo"
+								@click="focusCodeHelp('ItemNo');" @change="focusCodeHelp('ItemNo');">
+							<button class="btn-style-03" @click="searchCodeHelp('ItemNo');"> 조회</button>
+						</div>
+					</div>
+				</div>
+				<div class="table-container">
+					<div class="pagination-row">
+						<div class="pagination">
+							<a href="javascript:void(0);" class="btn-prev" @click="pagingCodeHelp('ItemNo','prev');"></a>
+							<div class="mum-box">
+								<input class="current" type="text" name="PageCount" value="1"
+									@change="searchCodeHelp('ItemNo');">
+							</div>
+							<a href="javascript:void(0);" class="btn-next" @click="pagingCodeHelp('ItemNo','next');"></a>
+						</div>
+						<div class="combo">
+							<select name="PageSize" @change="searchCodeHelp('ItemNo');">
+								<option value="50">50개씩 보기</option>
+								<option value="100">100개씩 보기</option>
+								<option value="150">150개씩 보기</option>
+								<option value="200">200개씩 보기</option>
+								<option value="250">250개씩 보기</option>
+								<option value="300">300개씩 보기</option>
+								<option value="350">350개씩 보기</option>
+								<option value="400">400개씩 보기</option>
+								<option value="450">450개씩 보기</option>
+								<option value="500">500개씩 보기</option>
+							</select>
+						</div>
+					</div>
+		
+					<div class="table-row">
+						<div class="table" id="grid-ItemNo">
+							<table>
+								<thead>
+									<tr>
+										<td>번호</td>
+										<td>품번</td>
+										<td>품목코드</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr name="ch-tr" v-for="(row, index) in rows.ItemNoListQuery"
+										@click="selectCodeHelp(index);">
+										<td class="text-c">{{row.SerialNo}}</td>
+										<td>{{row.ItemNo}}</td>
+										<td>{{row.ItemSeq}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+		
+					<div class="btn-row">
+						<button class="left" @click="closeCodeHelp('ItemNo');">Close</button>
+						<button class="right" @click="okCodeHelp('ItemNo');">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 </body>

@@ -8,7 +8,9 @@ var app = new Vue({
 		},
 		rows: {
 			'Query': [],
-			'storageListQuery': [],
+			'OutWHNameListQuery': [],
+			'InWHNameListQuery': [],
+			'ItemNoListQuery': [],
 			'isActive': [],
 		},
 		queryForm:{
@@ -730,14 +732,19 @@ var app = new Vue({
 		},
 		okCodeHelp: function (targetName) { 
 			let obj = document.querySelector('#grid-' + (targetName) + ' tbody tr.click');
-			if (targetName == 'Storage') {
-				this.queryForm[targetName] = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHName;
-				this.queryForm.StorageCode = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHSeq;
-			} else {
-				this.queryForm.ProductName = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemName;
-				this.queryForm.DVReqNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].DVReqNo;
-				this.queryForm.ProductSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemSeq;
+			document.querySelectorAll('[name="ch-tr"]').forEach(obj => obj.classList.remove('click'));
+			if (targetName == 'OutWHName') {
+				this.queryForm.OutWHName = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHName;
+				this.queryForm.OutWHSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHSeq;
+			} else if (targetName == 'InWHName') {
+				this.queryForm.InWHName = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHName;
+				this.queryForm.InWHSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].WHSeq;
+			} else if (targetName == 'ItemNo') {
+				this.queryForm.ItemNo = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemNo;
+				this.queryForm.ItemSeq = this.rows[targetName + 'ListQuery'][obj.selectedIndex].ItemSeq;
+				this.ItemNoSel();
 			}
+			// this.queryForm[targetName] = InWHNameListQuery
 			this.closeCodeHelp(targetName);
 		},
 		closeCodeHelp: function(targetName){
@@ -766,6 +773,7 @@ var app = new Vue({
 					}	
 				}
 			}
+			document.querySelectorAll('[name="ch-tr"]').forEach(obj=>obj.classList.remove('click'));
 		},
 		setSearchCodeHelp: function(key, value){
 			const idx = (this.codeHelp[key] == null && this.codeHelpDependencyKey[key] != null) ? this.codeHelpDependencyKey[key] : key;
@@ -828,9 +836,14 @@ var app = new Vue({
 			params.PageCount = (pageCountObj != null) ? pageCountObj.value : 1;
 			params.PageSize = (pageSizeObj != null) ? pageSizeObj.value : 50;
 			params.UCompanySeq = GX.Cookie.get('UCompanySeq');
+
+			let MethodId = 'Genuine.coreModuleName.BisSIAPIIntegration_core/WHCodeHelp';
+			if (targetName == 'ItemNo') {
+				MethodId = 'Genuine.coreModuleName.BisSIAPIIntegration_core/ItemNoCodeHelp';
+			}
 			var vThis = this;
 			GX._METHODS_
-			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/WHCodeHelp')
+			.setMethodId(MethodId)
 			.ajax([params], [function(data){
 				for(var di in data){
 					if(data.hasOwnProperty(di)){
@@ -851,7 +864,7 @@ var app = new Vue({
 					else if(data.length > 1) vThis.showCodeHelp(tempTargetName);
 				}
 
-				vThis.rows[tempTargetName.capitalizeFirstLetter('L') + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
+				vThis.rows[tempTargetName + 'ListQuery'] = (data.length == 0 || (data[0].Status != null && String(data[0].Status).length > 0)) ? [] : data; //empNameListQuery
 			}]);
 
 			if(event.type == 'click') event.target.blur();
@@ -863,13 +876,13 @@ var app = new Vue({
 				for(let i in obj){
 					if(obj.hasOwnProperty(i)) {
 						obj[i].selectedIndex = i;
-						obj[i].className = (i == String(index)) ? 'check' : '';
+						obj[i].className = (i == String(index)) ? 'click' : '';
 					}
 				}				
 			}
 			else {
 				event.target.selectedIndex = index;
-				event.target.className = 'check';
+				event.target.className = 'click';
 			}
 		},
 		selectedApplyCodeHelp: function(targetName){
@@ -982,13 +995,13 @@ var app = new Vue({
 			
 			this.queryForm.Date = GX.formatDate(GX.nowDate().full, 'Y-M-D');
 
-			GX.VueGrid
-			.init()
-			.bodyRow('@click="selectCodeHelp(index);"')
-			.item('SerialNo').head('NO.', 'num text-c')
-			.item('WHName').head('창고명', '')
-			.item('WHSeq').head('창고코드', '')
-			.loadTemplate('#grid-Storage', 'rows.storageListQuery');
+			// GX.VueGrid
+			// .init()
+			// .bodyRow('@click="selectCodeHelp(index);"')
+			// .item('SerialNo').head('NO.', 'num text-c')
+			// .item('WHName').head('창고명', '')
+			// .item('WHSeq').head('창고코드', '')
+			// .loadTemplate('#grid-Storage', 'rows.storageListQuery');
 
 			// GX.VueGrid
 			// .init()
