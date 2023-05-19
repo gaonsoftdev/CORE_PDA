@@ -39,35 +39,93 @@
 			<div class="img" onclick="location.replace('main.html');">
 				<img src="img/btn_back.png">
 			</div>
-			<span>제품출고처리</span>
+			<span>이동입력처리</span>
 		</div>
 		<div class="data-container">
-			<div class="data-wrap">
-				<div class="row">
-					<div class="title-row">
-						<span>등록일자</span>
-					</div>
-					<input type="text" name="Date" v-model.trim="queryForm.Date" value="" validate="required:이동 희망일를 입력해주세요!" gx-datepicker="queryForm.Date" gx-default="">
+			<div class="data-row">
+				<div class="title-row">
+					<span>출고창고</span><span class="scan" @click="runScanner('queryForm.OutWHName');">스캔</span>
+				</div>
+				<div class="search-wrap">
+					<input type="text" name="OutWHName" v-model="queryForm.OutWHName" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<button class="btn-style-03" name="OutWHName" @click="openCodeHelp();">조회</button>
 				</div>
 			</div>
 			<div class="data-row">
 				<div class="title-row">
-					<span>출하의뢰번호</span><span class="scan" @click="runScanner('queryForm.DVReqNo');">스캔</span>
+					<span>입고창고</span><span class="scan" @click="runScanner('queryForm.InWHName');">스캔</span>
 				</div>
-				<div class="search-wrap">        
-					<input type="text" name="DVReqNo" v-model="queryForm.DVReqNo" gx-scanner="Y" gx-init="addForm" gx-default="">
-					<button class="btn-style-03" name="DVReqNo" @click="openCodeHelp();">조회</button>
+				<div class="search-wrap">
+					<input type="text" name="InWHName" v-model="queryForm.InWHName" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<button class="btn-style-03" name="InWHName" @click="openCodeHelp();">조회</button>
 				</div>
 			</div>
-
+			<div class="data-row">
+				<div class="title-row">
+					<span>품번Barcode</span><span class="scan" @click="runScanner('queryForm.ItemNo');">스캔</span>
+				</div>
+				<div class="search-wrap">
+					<input type="text" name="ItemNo" v-model="queryForm.ItemNo" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<button class="btn-style-03" name="ItemNo" @click="openCodeHelp();">조회</button>
+				</div>
+			</div>
+			<div class="data-con">
+				<div class="num">
+					<div class="title-row">
+						<span>수량</span>
+					</div>
+					<input type="text" name="Qty" v-model="queryForm.Qty" gx-scanner="Y" gx-init="addForm" gx-default="">
+					<span class="unit">EA</span>
+				</div>
+				<div class="date">
+					<div class="title-row">
+						<span>이동일자</span>
+					</div>
+					<div class="search-wrap">
+						<input type="text" name="Date" v-model.trim="queryForm.Date" value="" validate="required:이동 희망일를 입력해주세요!"
+							gx-datepicker="queryForm.Date" gx-default="">
+						<button class="btn-style-07" @click="add2();">적용</button>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div class="table-container">
 			<div class="btn-row">
-				<button class="btn-style-04" @click="del();">선택삭제</button>
-				<button class="btn-style-07" @click="init();">초기화</button>
+				<button class="btn-style-04" @click="del3();">선택삭제</button>
+				<button class="btn-style-06" @click="init();">초기화</button>
 			</div>
 			<div class="data-row">
-				<div class="table" id="grid">
+				<div class="table tb-h-01" >
+					<table>
+						<thead>
+							<tr>
+								<td><input type="checkbox" name="allCk" @click="allCheck();" ></td>
+								<td class="num text-c">번호</td>
+								<td>품명</td>
+								<td>품번</td>
+								<td class="text-r">수량</td>
+								<td>단위</td>
+								<td>출고창고</td>
+								<td>입고창고</td>
+								<td>Lot No.</td>
+							</tr>
+						</thead>
+						<tbody v-for="(row, index) in rows.Query">
+							<tr :class="[row.isActive]">
+								<td class="text-c">
+									<input type="checkbox" name="ReqSerl" @click="checkSel(index);"/>
+								</td>
+								<td class="text-c">{{row.SerialNo}}</td>
+								<td>{{row.ItemName}}</td>
+								<td>{{row.ItemNo}}</td>
+								<td class="text-r">{{row.Qty}}</td>
+								<td class="text-c">{{row.UnitSeq}}</td>
+								<td>{{row.OutWHName}}</td>
+								<td>{{row.InWHName}}</td>
+								<td>{{row.LotNo}}</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 				
 			</div>

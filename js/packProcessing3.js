@@ -7,19 +7,25 @@ var app = new Vue({
 			ReqQty: 'quantity2'
 		},
 		rows: {
-			'WHName': [],
-			'UnitName': [],
 			'Query': [],
-			'storageListQuery':[],
+			'storageListQuery': [],
+			'isActive': [],
 		},
 		queryForm:{
-			Date:'',
-			DVReqNo:''
+			OutWHName: '',
+			OutWHSeq: '',
+			InWHName: '',
+			InWHSeq: '',
+			ItemNo: '',
+			Qty: '',
 		},
-		QtyData:{
+		itemMap:{
 			ItemName:'',
-			Qty:'',
-			InvQty:''
+			ItemNo:'',
+			Spec: '',
+			UnitName: '',
+			ItemSeq: '',
+			UnitSeq: '',
 		},
 		itemData:{
 			ItemName:'',
@@ -50,37 +56,46 @@ var app = new Vue({
 		pdaPort: GX.Cookie.get('pdaPort')
 	},
 	methods:{
-		//출고증조회
-		ReWorkPalletSel: function(){
+		//창고조회
+		WHSel: function(WH){
 			var vThis = this;
-			let params = {QryType:'RePalletQuery',Gubun:'IDD_PACK_PALL'};
-			let inputData = GX.deepCopy(GX.makeParamByForm(['ReWorkPallet'])); //참조없는 복사
-			Object.assign(params, inputData);
+			let params = {
+				UCompanySeq: GX.Cookie.get('UCompanySeq'),
+				WHName: vThis.queryForm[WH+'Name'],
+			};
 			GX._METHODS_
-			.setMethodId('ReWorkPal')
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/WHQuery')
 			.ajax([params],[
 				function(data){
-					if(data != null){
-						for(let i in data){
-							data[i].SerialNo = Number(i)+1;
+					if(data != null && data.length>0){
+						if (data[0].ErrCode == 99999) {
+							alert(data[0].ErrMessage);
+							vThis.queryForm[WH + 'Name'] = '';
+						} else {
+							vThis.queryForm[WH+'Name'] = data[0].WHName;
+							vThis.queryForm[WH + 'Seq'] = data[0].WHSeq;
+							if(WH == 'OutWH') {
+								document.querySelector('[name="InWHName"]').focus();	
+							} else {
+								document.querySelector('[name="ItemNo"]').focus();	
+							}
+							
 						}
-						vThis.rows['ReWorkData'] = data;
 					}
 					
 				}
 			]);
 		},
-		//바코드조회
-		DVReqNoSel: function(){
+		//품번바코드조회
+		ItemNoSel: function(){
 			var vThis = this;
-			bk1: if(vThis.queryForm.DVReqNo != ''){
+			bk1: if(vThis.queryForm.ItemNo != ''){
 				let params = {
 					UCompanySeq: GX.Cookie.get('UCompanySeq'),
-					DVReqNo: vThis.queryForm.DVReqNo,
+					ItemNo: vThis.queryForm.ItemNo,
 				};
-				this.init();
 				GX._METHODS_
-				.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/DVReqQuery')
+				.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/ItemQuery')
 				.ajax([params],[
 					function(data){
 						if (data != null && data.length >0) {
@@ -88,10 +103,9 @@ var app = new Vue({
 							if(data[0].ErrCode == 99999){
 								alert(data[0].ErrMessage);	
 							} else {
-								vThis.rows.Query = vThis.rows.Query.concat(data);
-								for (i in vThis.rows.Query) {
-									vThis.rows.Query[i].SerialNo = Number(i)+1;
-								}
+								// vThis.rows.Query = vThis.rows.Query.concat(data);
+								vThis.itemMap = data[0];
+								document.querySelector('[name="Qty"]').focus();
 							}
 							// vThis.rows.Query.splice(0, 0, data[0]);
 							// vThis.initSelected();
@@ -101,8 +115,82 @@ var app = new Vue({
 					}//function
 				]);
 			} else {
-				alert('출하의뢰 번호를 입력해주세요.');
+				alert('품번을 입력해주세요.');
 			}
+		},
+		add2: function () { 
+			if (this.queryForm.ItemNo.replaceAll(' ', '') == '') {
+				alert('품번을 입력해주세요.');
+			} else {
+				for (i in this.rows.Query){
+					if (this.rows.Query[i].OutWHSeq == this.queryForm.OutWHSeq && this.rows.Query[i].InWHSeq == this.queryForm.InWHSeq && this.rows.Query[i].ItemNo == this.queryForm.ItemNo) {
+						alert('중복된 데이터가 존재합니다.');	
+						return;
+					}
+
+				}
+				let param = {
+					SerialNo: this.rows.Query.length + 1,
+					ItemName: this.itemMap.ItemName,
+					ItemNo: this.itemMap.ItemNo,
+					ItemSeq: this.itemMap.ItemSeq,
+					UnitSeq: this.itemMap.UnitSeq,
+					Qty: this.queryForm.Qty,
+					UnitName: this.itemMap.UnitName,
+					OutWHName: this.queryForm.OutWHName,
+					OutWHSeq: this.queryForm.OutWHSeq,
+					InWHName: this.queryForm.InWHName,
+					InWHSeq: this.queryForm.InWHSeq,
+					LotNo: this.itemMap.LotNo,
+					Date: this.queryForm.Date.replaceAll('-',''),
+				};
+
+				this.rows.Query.splice(0,0,param);
+				this.queryForm.ItemNo = '';
+				this.queryForm.Qty = '';
+				this.itemMap = {};
+			}
+			
+			document.querySelector('[name="ItemNo"]').focus();
+
+		},
+		allCheck: function () { 
+			let ck = document.querySelector('[name="allCk"]').checked;
+			let objs = document.querySelectorAll('[name="ReqSerl"]');
+			if (ck) {
+				for (let i in objs) {
+					objs[i].checked = true;
+				}
+			} else {
+				for (let i in objs) {
+					objs[i].checked = false;
+				}
+			}
+		},
+		checkSel: function (idx) { 
+			let objs = document.querySelectorAll('[name="ReqSerl"]');
+			if (objs[idx].checked) {
+				this.rows.Query[idx]['isActive'] = 'click';
+			} else {
+				this.rows.Query[idx]['isActive'] = '';
+			}
+			
+		},
+		del3: function () { 
+			let ItemList = GX.deepCopy(this.rows.Query);
+			let params = [];
+			let objs = document.querySelectorAll('[name="ReqSerl"]');
+			for (let ci in objs) {
+				if (objs.hasOwnProperty(ci)) {
+					if (objs[ci].checked) { 
+
+					} else {
+						params.splice(0,0,ItemList[ci]);
+					}
+				}
+			}
+			document.querySelector('[name="allCk"]').checked = false;
+			this.rows.Query = params;
 		},
 		save2: function(){
 			var vThis = this;
@@ -114,35 +202,33 @@ var app = new Vue({
 			let params = [];
 			let param = {};
 			for(let i in ItemList){
-				if(ItemList.hasOwnProperty(i) && i > 0){
+				if(ItemList.hasOwnProperty(i)){
 					param = {};
 					param.UCompanySeq = GX.Cookie.get('UCompanySeq'),
-					param.DVReqSeq = ItemList[i].DVReqSeq;
-					param.DVReqSerl = ItemList[i].DVReqSerl;
+					param.InWHSeq = ItemList[i].InWHSeq;
+					param.OutWHSeq = ItemList[i].OutWHSeq;
 					param.ItemSeq = ItemList[i].ItemSeq;
 					param.UnitSeq = ItemList[i].UnitSeq;
-					param.LotNo = ItemList[i].LotNo;
 					param.Qty = ItemList[i].Qty;
-					param.WHSeq = ItemList[i].WHSeq;
 					param.EmpSeq = GX.Cookie.get('EmpSeq'),
 					params.push(param);
 				}
 			}
 			
 			GX._METHODS_
-			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/InvoiceProc')
+			.setMethodId('Genuine.coreModuleName.BisSIAPIIntegration_core/WHMoveProc')
 			.ajax(params, [function(data){
 				console.log(data);
 				if(data != null && data.length > 0){
 					if (data[0].ErrCode == 99999) {
 						alert(data[0].ErrMessage);	
 					} else {
-						alert('처리되었습니다.');
+						alert('등록되었습니다.');
+						vThis.init();
 					}
 					
 				}
 			}]);
-			this.init();
 		},
 		selectAll: function(){
 			//console.log("selectAll");
@@ -173,9 +259,15 @@ var app = new Vue({
 			if(event.target.checked) this.isCheckList.push(index);
 			else if(idx != -1) this.isCheckList.splice(idx, 1);
 		},
-		init: function(){
+		init: function () {
+			
+			this.queryForm.OutWHName = '';
+			this.queryForm.InWHName = '';
+			this.queryForm.ItemNo = '';
+			this.queryForm.Qty = '';
+			this.queryForm.Date = GX.formatDate(GX.nowDate().full, 'Y-M-D');
+			this.itemMap = {};
 			this.rows.Query = [];
-			this.queryForm.DVReqNo = '';
 			//this.rows.ReWorkData = [];
 			// this.queryForm = GX.getInitVueModelByFormDefault(this.queryForm);
 			// GX.initForm('addForm');	
@@ -405,6 +497,7 @@ var app = new Vue({
 		},
 		scanBarCode: function(){
 			var vThis = this;
+			let objAll = document.querySelectorAll('[gx-scanner="Y"]');
 			let clipboardData = event.clipboardData || window.clipboardData;
 			if(clipboardData != null){
 				let QRCodeData = clipboardData.getData('Text');
@@ -425,16 +518,21 @@ var app = new Vue({
 				if(activeObjName.length > 0){
 					
 					//if(this[activeObjName.capitalizeFirstLetter('L')] != null) this[activeObjName.capitalizeFirstLetter('L')] = QRCodeData;
-					if(vThis.queryForm[activeObjName] != null) vThis.queryForm[activeObjName] = QRCodeData;
+					// if(vThis.queryForm[activeObjName] != null) vThis.queryForm[activeObjName] = QRCodeData;
 					
+					if (objAll[0] == document.activeElement) {
+						vThis.queryForm.OutWHName = QRCodeData.replaceAll(' ','');
+						vThis.WHSel('OutWH');
+					} else if (objAll[1] == document.activeElement) {
+						vThis.queryForm.InWHName = QRCodeData.replaceAll(' ','');
+						vThis.WHSel('InWH');
+					} else if(objAll[2] == document.activeElement){
+						vThis.queryForm.ItemNo = QRCodeData.replaceAll(' ','');
+						vThis.ItemNoSel();
+					} else {
+						
+					}
 					
-					//GX.eventTrigger('[gx-scanner="Y"]:focus', 'change');//2개 있을 때
-					//GX.eventTrigger('[gx-scanner="Y"]', 'change');//1개 있을 때
-					//GX.eventTrigger('[name="'+activeObjName+'"]', 'change');//1 또는 2개 있을 때
-
-					//GX.TabIndex.next(activeObjName);
-					document.querySelector('[name="DVReqNo"]').value = QRCodeData.replaceAll(' ','');
-					vThis.DVReqNoSel();
 				}
 				
 				event.preventDefault();
@@ -873,7 +971,7 @@ var app = new Vue({
 		});//.set(2022, 1);
 
 		GX.NumberType.init(GX._DATAS_.convertRules);
-		document.querySelector('[name="DVReqNo"]').focus();
+		document.querySelector('[name="OutWHName"]').focus();
 	},
 	created(){
 		if(!GX._METHODS_.isLogin()) location.replace('login.html');
@@ -892,18 +990,18 @@ var app = new Vue({
 			.item('WHSeq').head('창고코드', '')
 			.loadTemplate('#grid-Storage', 'rows.storageListQuery');
 
-			GX.VueGrid
-			.init()
-			.bodyRow(':class="{\'check\':isChecked(index)}"')
-			.item('ReqSerl').head('<div class="chkBox"><input type="checkbox" @click="selectAll();" /></div>', '')
-			.body('<div class="chkBox"><input type="checkbox" name="ReqSerl" :value="row.ReqSerl" @click="selectedMark(index);" /></div>', '')
-			.item('SerialNo').head('번호', 'num text-c')
-			.item('ItemName').head('품명', '')
-			.item('ItemNo').head('품번', '')
-			.item('Qty').head('수량', 'text-r')
-			.item('UnitName').head('단위', '')
-			.item('LotNo').head('LotNo', '')
-			.loadTemplate('#grid', 'rows.Query');
+			// GX.VueGrid
+			// .init()
+			// .bodyRow(':class="{\'check\':isChecked(index)}"')
+			// .item('ReqSerl').head('<div class="chkBox"><input type="checkbox" @click="selectAll();" /></div>', '')
+			// .body('<div class="chkBox"><input type="checkbox" name="ReqSerl" :value="row.ReqSerl" @click="selectedMark(index);" /></div>', '')
+			// .item('SerialNo').head('번호', 'num text-c')
+			// .item('ItemName').head('품명', '')
+			// .item('ItemNo').head('품번', '')
+			// .item('Qty').head('수량', 'text-r')
+			// .item('UnitName').head('단위', '')
+			// .item('LotNo').head('LotNo', '')
+			// .loadTemplate('#grid', 'rows.Query');
 			
 
 			if(this.params.QryType != null && this.params.QryType == 'Query') this.search(this.params);

@@ -590,7 +590,9 @@ input[type=radio]{
 }
 .data-row{
 	margin-bottom: 1.4rem;
-	
+	&:last-child{
+		margin-bottom: 0;
+	}
 	.table{
 		height: 12.5rem;
 	}
@@ -664,6 +666,23 @@ input[type=radio]{
 	}
 }
 
+.input-row{
+	input[type="text"]{
+		width: 100%;
+	}
+}
+.date-row{
+	width: calc(100% - 6rem);
+	text-align: left;
+	input[type="text"]{
+		width: 41%;
+	}
+	span{
+		margin: 0 7px;
+		font-size: 1.5rem;
+		line-height: 3.6rem;
+	}
+}
 
 
 .table-container{
@@ -681,6 +700,9 @@ input[type=radio]{
 		}
 		&.tb-h-02{
 			height: 22.9rem;
+		}
+		&.tb-h-03{
+			height: 36.3rem;
 		}
 	}
 }
@@ -702,7 +724,6 @@ input[type=radio]{
 	// display: none;
 
 	.table{
-		height: 36.3rem;
 		margin-bottom: 1.5rem;
 	}
 

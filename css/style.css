@@ -527,6 +527,9 @@ input[type=radio]:checked::before {
 .data-row {
   margin-bottom: 1.4rem;
 }
+.data-row:last-child {
+  margin-bottom: 0;
+}
 .data-row .table {
   height: 12.5rem;
 }
@@ -597,6 +600,23 @@ input[type=radio]:checked::before {
   margin-right: 10px;
 }
 
+.input-row input[type=text] {
+  width: 100%;
+}
+
+.date-row {
+  width: calc(100% - 6rem);
+  text-align: left;
+}
+.date-row input[type=text] {
+  width: 41%;
+}
+.date-row span {
+  margin: 0 7px;
+  font-size: 1.5rem;
+  line-height: 3.6rem;
+}
+
 .table-container {
   padding: 1.5rem 1rem 1.5rem;
 }
@@ -615,6 +635,9 @@ input[type=radio]:checked::before {
 .table-container .table.tb-h-02 {
   height: 22.9rem;
 }
+.table-container .table.tb-h-03 {
+  height: 36.3rem;
+}
 
 .btn-row {
   padding: 0 1rem 1.5rem;
@@ -631,7 +654,6 @@ input[type=radio]:checked::before {
   z-index: 200;
 }
 .code-help-con .table {
-  height: 36.3rem;
   margin-bottom: 1.5rem;
 }
 .code-help-con .btn-row {
